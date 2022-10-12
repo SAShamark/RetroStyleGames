@@ -1,4 +1,4 @@
-﻿namespace Entities.Enemy
+﻿namespace Entities.Enemy.EnemyObject
 {
     public enum EnemyType
     {

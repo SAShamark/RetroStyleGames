@@ -1,4 +1,5 @@
 using System;
+using Entities.Player;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,8 +10,7 @@ public class UIPanelController : MonoBehaviour
     public static event Action OnShoot;
     public static event Action OnUlta;
 
-    [Header("Buttons")]
-    [SerializeField] private Button _shootButton;
+    [Header("Buttons")] [SerializeField] private Button _shootButton;
     [SerializeField] private Button _ultaButton;
     [SerializeField] private Button _loseRestartButton;
     [SerializeField] private Button _pauseRestartButton;
@@ -59,7 +59,6 @@ public class UIPanelController : MonoBehaviour
     private void Ulta()
     {
         OnUlta?.Invoke();
-        
     }
 
     private void Interactable(bool isActive)
@@ -90,5 +89,6 @@ public class UIPanelController : MonoBehaviour
     private void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        Time.timeScale = 1;
     }
 }

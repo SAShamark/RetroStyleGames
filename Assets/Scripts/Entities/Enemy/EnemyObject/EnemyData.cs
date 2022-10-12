@@ -1,7 +1,6 @@
 ﻿using System;
-using Entities.Enemy.EnemyObject;
 
-namespace Entities.Enemy
+namespace Entities.Enemy.EnemyObject
 {
     [Serializable]
     public class EnemyData

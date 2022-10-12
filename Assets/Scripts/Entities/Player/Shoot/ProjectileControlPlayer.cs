@@ -5,20 +5,21 @@ using UnityEngine;
 
 namespace Entities.Player.Shoot
 {
-    public class ProjectileControlPlayer : ProjectileControl
+    public sealed class ProjectileControlPlayer : ProjectileControl
     {
+        private PlayerController _playerController;
         private EnemySpawner _enemySpawner;
-        public int KillCount { get; set; }
+        public int KillCount { get; private set; }
         public float EnergyValue { get; private set; }
         private const int EnemyLayer = 9;
         private BaseEnemy _closestEnemy;
-        private int _killCount;
 
         private void Start()
         {
             _enemySpawner = EnemySpawner.Instance;
-            _turnOffProjectileCoroutine = TurnOffProjectile(_lifeTime);
-            StartCoroutine(_turnOffProjectileCoroutine);
+            _playerController = PlayerController.Instanse;
+            TurnOffProjectileCoroutine = TurnOffProjectile(_lifeTime);
+            StartCoroutine(TurnOffProjectileCoroutine);
         }
 
         protected override void OnTriggerEnter(Collider other)
@@ -26,17 +27,30 @@ namespace Entities.Player.Shoot
             base.OnTriggerEnter(other);
             if (other.gameObject.layer == EnemyLayer)
             {
-                Debug.LogError(13);
                 var enemy = other.gameObject.GetComponentInParent<BaseEnemy>();
                 EnergyValue = GetEnergyPoint(enemy);
                 KillCount++;
                 enemy.DecreaseHealth(enemy.Health);
+                if (KillCount == 1)
+                {
+                    TryGetNextEnemy();
+                }
+                else if (KillCount > 1)
+                {
+                    KillCount = 0;
+                    gameObject.SetActive(false);
+                    StopCoroutine(TurnOffProjectileCoroutine);
+                }
             }
         }
 
-        public void TryGetNextEnemy()
+        private void TryGetNextEnemy()
         {
-            _closestEnemy = FindClosestEnemy();
+            var doIt = Random.Range(0, 10);
+            if (doIt == 0 || _playerController.Health < _playerController.MaxHealth / 10)
+            {
+                _closestEnemy = FindClosestEnemy();
+            }
         }
 
         private BaseEnemy FindClosestEnemy()
@@ -67,7 +81,7 @@ namespace Entities.Player.Shoot
             EnergyValue = 0;
         }
 
-        protected override IEnumerator TurnOffProjectile(float lifeTime)
+        private IEnumerator TurnOffProjectile(float lifeTime)
         {
             yield return new WaitForSeconds(lifeTime);
             gameObject.SetActive(false);
@@ -81,8 +95,10 @@ namespace Entities.Player.Shoot
             }
             else
             {
-                transform.position =
-                    Vector3.MoveTowards(transform.position, _closestEnemy.transform.position, _moveSpeed);
+                /*transform.position =
+                    Vector3.MoveTowards(transform.position, _closestEnemy.transform.position, _moveSpeed);*/
+                transform.position += (_closestEnemy.transform.position - transform.position).normalized *
+                                      (_moveSpeed * Time.deltaTime);
             }
         }
     }

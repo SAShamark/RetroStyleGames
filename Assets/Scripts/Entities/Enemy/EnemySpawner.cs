@@ -1,10 +1,8 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Entities.Enemy.EnemyObject;
 using Entities.Player;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Entities.Enemy
 {
@@ -16,10 +14,11 @@ namespace Entities.Enemy
         [SerializeField] private List<EnemyData> _enemyDates;
         [SerializeField] private EnemyData _defaultEnemy;
         [SerializeField] private Transform _enemyContainer;
-        private float _startTimeForSpawn = 5f;
+        private const float StartTimeForSpawn = 5f;
         private float _timeForSpawn;
-        private float _decreasedSpawnTimeValue = 0.5f;
+        private const float DecreasedSpawnTimeValue = 0.5f;
         private int _countForSpawnEnemy = 1;
+        private const float MINSpawnTime = 2;
         private EnemyType _enemyType;
 
         private void Start()
@@ -35,7 +34,7 @@ namespace Entities.Enemy
             }
 
             EnemiesContainer = new List<BaseEnemy>();
-            _timeForSpawn = _startTimeForSpawn;
+            _timeForSpawn = StartTimeForSpawn;
             StartCoroutine(SpawnEnemyMethod());
         }
 
@@ -45,9 +44,9 @@ namespace Entities.Enemy
             while (true)
             {
                 yield return delay;
-                if (_timeForSpawn >= 2f)
+                if (_timeForSpawn >= MINSpawnTime)
                 {
-                    _timeForSpawn -= _decreasedSpawnTimeValue;
+                    _timeForSpawn -= DecreasedSpawnTimeValue;
                 }
                 else
                 {
@@ -64,7 +63,6 @@ namespace Entities.Enemy
             {
                 _target.OnTelepot -= enemy.ChangeTarget;
             }
-            
         }
 
         private void CreatEnemy()
@@ -89,11 +87,11 @@ namespace Entities.Enemy
             EnemiesContainer.Remove(enemy);
         }
 
+        //Blue:Red = 1:4
         private EnemyType GetEnemyType()
         {
-           // var index = Random.Range(1, 6);
-           // return index > 1 ? EnemyType.Red : EnemyType.Blue;
-           return EnemyType.Blue;
+            var index = Random.Range(1, 6);
+            return index > 1 ? EnemyType.Red : EnemyType.Blue;
         }
 
         private BaseEnemy GetEnemyForSpawn(EnemyType enemyType)

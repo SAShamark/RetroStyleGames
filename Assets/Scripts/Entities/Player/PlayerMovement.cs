@@ -23,7 +23,7 @@ namespace Entities.Player
 
         [SerializeField] private LayerMask _groundMask;
 
-        private Vector3 gravityVelocity;
+        private Vector3 _gravityVelocity;
         private float _minPlayerYPosition = -1;
 
         private bool Grounded => Physics.CheckSphere(_groundChecker.position, _groundDistance, _groundMask);
@@ -44,7 +44,6 @@ namespace Entities.Player
 
         private void TeleportPlayer()
         {
-            Debug.LogError("TeleportPlayer");
             OnTelepot?.Invoke(_playerTransform.position);
             _playerTransform.position = PositionProcessor.GetNewPosition();
         }
@@ -68,14 +67,14 @@ namespace Entities.Player
 
         private void ApplyGravity()
         {
-            gravityVelocity.y += _gravityValue * Time.deltaTime;
-            _controllerPlayer.Move(gravityVelocity * Time.deltaTime);
+            _gravityVelocity.y += _gravityValue * Time.deltaTime;
+            _controllerPlayer.Move(_gravityVelocity * Time.deltaTime);
         }
 
         private void ResetGravityIfGrounded()
         {
-            if (Grounded && gravityVelocity.y < 0)
-                gravityVelocity.y = -1.5f;
+            if (Grounded && _gravityVelocity.y < 0)
+                _gravityVelocity.y = -1.5f;
         }
 
         private Vector3 PlayerMovementDirection()

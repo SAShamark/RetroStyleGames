@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +6,7 @@ namespace Entities.Player.Shoot
     public class ShootController : MonoBehaviour
     {
         [SerializeField] private PlayerController _playerController;
-        public List<ProjectileControlPlayer> ProjectileControlPlayer { get; set; }
+        private List<ProjectileControlPlayer> ProjectileControlPlayer { get; set; }
         [SerializeField] private ProjectileControl _projectile;
         [SerializeField] private Transform _container;
         [SerializeField] private Transform _projectileStartPosition;

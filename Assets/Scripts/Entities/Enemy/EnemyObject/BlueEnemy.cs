@@ -34,7 +34,7 @@ namespace Entities.Enemy.EnemyObject
 
         private void Update()
         {
-            if (Vector3.Distance(Target.position, transform.position) <= _our.stoppingDistance && !_shoot)
+            if (Vector3.Distance(Target.position, transform.position) <= Our.stoppingDistance && !_shoot)
             {
                 _shoot = true;
                 StartCoroutine(_shootCorutine);
@@ -43,7 +43,7 @@ namespace Entities.Enemy.EnemyObject
             {
                 MoveToTarget();
             }
-            else if (Vector3.Distance(Target.position, transform.position) > _our.stoppingDistance)
+            else if (Vector3.Distance(Target.position, transform.position) > Our.stoppingDistance)
             {
                 StopCoroutine(_shootCorutine);
                 _shoot = false;

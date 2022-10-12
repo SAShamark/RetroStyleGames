@@ -16,10 +16,10 @@ namespace Entities.Enemy.EnemyObject
         public float Attack { get; private set; }
         private EnemySpawner _enemySpawner;
 
-        protected NavMeshAgent _our;
+        protected NavMeshAgent Our;
         private float _minHealth = 0;
 
-        
+
         protected virtual void Start()
         {
             Init();
@@ -32,14 +32,13 @@ namespace Entities.Enemy.EnemyObject
             Health = EnemyStaticData.Health;
             Attack = EnemyStaticData.Attack;
             EnergyPoint = EnemyStaticData.EnergyPoint;
-            _our = GetComponent<NavMeshAgent>();
-            _our.speed = MoveSpeed;
+            Our = GetComponent<NavMeshAgent>();
+            Our.speed = MoveSpeed;
         }
 
         public void DecreaseHealth(float value)
         {
             Health -= value;
-            Debug.LogError(Health);
             if (Health <= _minHealth)
             {
                 Health = _minHealth;
@@ -58,7 +57,7 @@ namespace Entities.Enemy.EnemyObject
 
         protected virtual void MoveToTarget()
         {
-            _our.destination = Target.position;
+            Our.destination = Target.position;
         }
     }
 }

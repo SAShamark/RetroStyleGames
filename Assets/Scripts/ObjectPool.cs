@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class ObjectPool<T> where T : MonoBehaviour
 {
-    public T Prefab { get; }
-    public Transform Container { get; }
+    private T Prefab { get; }
+    private Transform Container { get; }
     private List<T> _pool;
 
     public ObjectPool(T prefab, int count, Transform container)

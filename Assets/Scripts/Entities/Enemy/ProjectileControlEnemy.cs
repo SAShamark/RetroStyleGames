@@ -1,9 +1,10 @@
 ﻿using System.Collections;
+using Entities.Player;
 using UnityEngine;
 
 namespace Entities.Enemy
 {
-    public class ProjectileControlEnemy : ProjectileControl
+    public sealed class ProjectileControlEnemy : ProjectileControl
     {
         public Transform Target { get; set; }
         private Vector3 _lastTargetPosition;
@@ -15,8 +16,8 @@ namespace Entities.Enemy
         {
             
             _startParent = transform.parent;
-            _turnOffProjectileCoroutine = TurnOffProjectile(_lifeTime);
-            StartCoroutine(_turnOffProjectileCoroutine);
+            TurnOffProjectileCoroutine = TurnOffProjectile(_lifeTime);
+            StartCoroutine(TurnOffProjectileCoroutine);
             transform.parent = null;
         }
 
@@ -37,7 +38,7 @@ namespace Entities.Enemy
             _loseTarget = false;
         }
 
-        protected override IEnumerator TurnOffProjectile(float lifeTime)
+        private IEnumerator TurnOffProjectile(float lifeTime)
         {
             yield return new WaitForSeconds(lifeTime);
             transform.parent = _startParent;
@@ -64,14 +65,14 @@ namespace Entities.Enemy
                 newPosition = _lastTargetPosition;
             }
 
-            transform.position += (newPosition - transform.position).normalized * _moveSpeed * Time.deltaTime;
+            transform.position += (newPosition - transform.position).normalized * (_moveSpeed * Time.deltaTime);
         }
 
         private void TurnOffGameObject()
         {
             gameObject.SetActive(false);
             transform.parent = _startParent;
-            StopCoroutine(_turnOffProjectileCoroutine);
+            StopCoroutine(TurnOffProjectileCoroutine);
         }
     }
 }

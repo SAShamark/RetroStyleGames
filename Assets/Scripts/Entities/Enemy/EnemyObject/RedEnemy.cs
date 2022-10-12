@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using Entities.Player;
 using UnityEngine;
 
 namespace Entities.Enemy.EnemyObject
@@ -13,11 +15,13 @@ namespace Entities.Enemy.EnemyObject
         private float _fallibilityY = 0.1f;
         private const int PlayerLayer = 8;
 
+        private IEnumerator _startMoveCorutine;
 
         protected override void Start()
         {
             base.Start();
-            StartCoroutine(StartMove());
+            _startMoveCorutine = StartMove();
+            StartCoroutine(_startMoveCorutine);
         }
 
         private void OnTriggerEnter(Collider other)
@@ -37,7 +41,6 @@ namespace Entities.Enemy.EnemyObject
 
         private IEnumerator StartMove()
         {
-
             while (_model.position.y <= _yUpPosition - _fallibilityY)
             {
                 var position = _model.position;
@@ -58,6 +61,14 @@ namespace Entities.Enemy.EnemyObject
             _model.localPosition = new Vector3(0, 0, 0);
 
             _move = true;
+        }
+
+        private void OnDestroy()
+        {
+            if (_startMoveCorutine != null)
+            {
+                StopCoroutine(_startMoveCorutine);
+            }
         }
 
         public override void ChangeTarget(Vector3 newTarget)

@@ -1,86 +1,90 @@
 using System;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+namespace Entities.Player
 {
-    public static PlayerController Instanse;
-    public event Action<bool> OnUltaButton;
-    public event Action OnDeath;
-    public int KillCount { get; private set; }
-    public float Health => _health;
-    public float Power => _power;
-    [SerializeField] private float _health;
-    [Range(0, 100)] [SerializeField] private float _power;
-
-
-    private float _maxPower = 100;
-    private float _minPower = 0;
-    private float _maxHealth = 100;
-    private float _minHealth = 0;
-
-    private void Awake()
+    public class PlayerController : MonoBehaviour
     {
-        if (Instanse == null)
+        public static PlayerController Instanse;
+        public event Action<bool> OnUltaButton;
+        public event Action OnDeath;
+        public int KillCount { get; private set; }
+        public float Health => _health;
+        public float Power => _power;
+        public float _maxHealth = 100;
+        public float MaxHealth => _maxHealth;
+        [SerializeField] private float _health;
+        [Range(0, 100)] [SerializeField] private float _power;
+
+
+        private float _maxPower = 100;
+        private float _minPower = 0;
+        private float _minHealth = 0;
+
+        private void Awake()
         {
-            Instanse = this;
+            if (Instanse == null)
+            {
+                Instanse = this;
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
         }
-        else
+
+        public void IncreaseKillCount()
         {
-            Destroy(gameObject);
+            KillCount++;
         }
-    }
 
-    public void IncreaseKillCount()
-    {
-        KillCount++;
-    }
-
-    public void IncreasePower(float value)
-    {
-        _power += value;
-        if (_power >= _maxPower)
+        public void IncreasePower(float value)
         {
-            _power = _maxPower;
-            UpdatePower(true);
+            _power += value;
+            if (_power >= _maxPower)
+            {
+                _power = _maxPower;
+                UpdatePower(true);
+            }
         }
-    }
 
-    public void IncreaseHealth(float value)
-    {
-        _health += value;
-        if (_health >= _maxHealth)
+        public void IncreaseHealth(float value)
         {
-            _health = _maxHealth;
+            _health += value;
+            if (_health >= _maxHealth)
+            {
+                _health = _maxHealth;
+            }
         }
-    }
 
-    private void UpdatePower(bool isActive)
-    {
-        OnUltaButton?.Invoke(isActive);
-    }
-
-    public void DecreasePower(float value)
-    {
-        _power -= value;
-        UpdatePower(false);
-        if (_power < _minPower)
+        private void UpdatePower(bool isActive)
         {
-            _power = _minPower;
+            OnUltaButton?.Invoke(isActive);
         }
-    }
 
-    public void DecreaseHealth(float value)
-    {
-        _health -= value;
-        if (_health < _minHealth)
+        public void DecreasePower(float value)
         {
-            _health = _minHealth;
-            Death();
+            _power -= value;
+            UpdatePower(false);
+            if (_power < _minPower)
+            {
+                _power = _minPower;
+            }
         }
-    }
 
-    private void Death()
-    {
-        OnDeath?.Invoke();
+        public void DecreaseHealth(float value)
+        {
+            _health -= value;
+            if (_health < _minHealth)
+            {
+                _health = _minHealth;
+                Death();
+            }
+        }
+
+        private void Death()
+        {
+            OnDeath?.Invoke();
+        }
     }
 }

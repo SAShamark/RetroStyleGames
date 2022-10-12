@@ -9,7 +9,7 @@ namespace Entities
         [SerializeField] private LayerMask _layerMask;
         [SerializeField] protected float _moveSpeed = 3f;
         [SerializeField] protected float _lifeTime = 5;
-        protected IEnumerator _turnOffProjectileCoroutine;
+        protected IEnumerator TurnOffProjectileCoroutine;
         private bool _move = true;
 
 
@@ -17,35 +17,32 @@ namespace Entities
         {
             if (_move)
             {
-                Move(); 
+                Move();
             }
         }
 
         protected virtual void OnTriggerEnter(Collider other)
         {
-            if (((1 << other.gameObject.layer) & _layerMask) != 0)
+            var triggerEnterCountLayer = ((1 << other.gameObject.layer) & _layerMask);
+            
+            if (triggerEnterCountLayer != 0)
             {
                 gameObject.SetActive(false);
-                if (_turnOffProjectileCoroutine != null)
+                if (TurnOffProjectileCoroutine != null)
                 {
-                    StopCoroutine(_turnOffProjectileCoroutine);
+                    StopCoroutine(TurnOffProjectileCoroutine);
                 }
             }
         }
 
-       
 
         protected virtual void OnDisable()
         {
-            if (_turnOffProjectileCoroutine != null)
+            if (TurnOffProjectileCoroutine != null)
             {
-                StopCoroutine(_turnOffProjectileCoroutine);
+                StopCoroutine(TurnOffProjectileCoroutine);
             }
         }
-
-        protected abstract IEnumerator TurnOffProjectile(float lifeTime);
-        
-
         protected abstract void Move();
     }
 }
