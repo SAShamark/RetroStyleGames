@@ -5,20 +5,20 @@ namespace Entities
 {
     public abstract class ProjectileControl : MonoBehaviour
     {
+        public float AttackValue { get; set; }
         [SerializeField] private LayerMask _layerMask;
         [SerializeField] protected float _moveSpeed = 3f;
-        [SerializeField] private float _lifeTime = 5;
-        private IEnumerator _turnOffProjectileCoroutine;
+        [SerializeField] protected float _lifeTime = 5;
+        protected IEnumerator _turnOffProjectileCoroutine;
+        private bool _move = true;
 
-        private void Start()
-        {
-            _turnOffProjectileCoroutine = TurnOffProjectile(_lifeTime);
-            StartCoroutine(_turnOffProjectileCoroutine);
-        }
 
         private void Update()
         {
-            Move();
+            if (_move)
+            {
+                Move(); 
+            }
         }
 
         protected virtual void OnTriggerEnter(Collider other)
@@ -33,8 +33,9 @@ namespace Entities
             }
         }
 
+       
 
-        private void OnDisable()
+        protected virtual void OnDisable()
         {
             if (_turnOffProjectileCoroutine != null)
             {
@@ -42,13 +43,9 @@ namespace Entities
             }
         }
 
-        private IEnumerator TurnOffProjectile(float lifeTime)
-        {
-            yield return new WaitForSeconds(lifeTime);
-            gameObject.SetActive(false);
-        }
+        protected abstract IEnumerator TurnOffProjectile(float lifeTime);
+        
 
         protected abstract void Move();
-       
     }
 }

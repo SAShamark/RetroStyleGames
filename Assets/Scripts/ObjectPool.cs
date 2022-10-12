@@ -34,7 +34,7 @@ public class ObjectPool<T> where T : MonoBehaviour
         return creatObject;
     }
 
-    public bool HasFreeElement(out T element)
+    private bool HasFreeElement(out T element)
     {
         foreach (var mono in _pool)
         {
@@ -52,11 +52,6 @@ public class ObjectPool<T> where T : MonoBehaviour
 
     public T GetFreeElement()
     {
-        if (HasFreeElement(out var element))
-        {
-            return element;
-        }
-
-        return CreatObject(true);
+        return HasFreeElement(out var element) ? element : CreatObject(true);
     }
 }

@@ -1,32 +1,68 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Entities.Player.Shoot
 {
     public class ShootController : MonoBehaviour
     {
+        [SerializeField] private PlayerController _playerController;
+        public List<ProjectileControlPlayer> ProjectileControlPlayer { get; set; }
         [SerializeField] private ProjectileControl _projectile;
         [SerializeField] private Transform _container;
         [SerializeField] private Transform _projectileStartPosition;
         [SerializeField] private int _countProjectile;
-        private ObjectPool<ProjectileControl> objectPool;
+        [SerializeField] private Transform _camera;
+        private ObjectPool<ProjectileControl> _objectPool;
+        private int _updateKillCount;
 
         private void Start()
         {
-            objectPool = new ObjectPool<ProjectileControl>(_projectile, _countProjectile, _container);
-
-            ShootButton.OnShoot += GetProjectile;
+            _objectPool = new ObjectPool<ProjectileControl>(_projectile, _countProjectile, _container);
+            ProjectileControlPlayer = new List<ProjectileControlPlayer>();
+            UIPanelController.OnShoot += GetProjectile;
         }
 
         private void OnDestroy()
         {
-            ShootButton.OnShoot -= GetProjectile;
+            UIPanelController.OnShoot -= GetProjectile;
         }
 
         private void GetProjectile()
         {
-            var projectile = objectPool.GetFreeElement();
-            projectile.transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y, 0);
+            _updateKillCount = 0;
+            var projectile = _objectPool.GetFreeElement();
+            var projectileControlPlayer = projectile.GetComponent<ProjectileControlPlayer>();
+            ProjectileControlPlayer.Add(projectileControlPlayer);
+            projectile.transform.rotation = Quaternion.Euler(_camera.eulerAngles.x, transform.eulerAngles.y, 0);
             projectile.transform.position = _projectileStartPosition.position;
+        }
+
+        private void Update()
+        {
+            UpdateEnergyPoint();
+        }
+
+        private void UpdateEnergyPoint()
+        {
+            foreach (var projectileControlPlayer in ProjectileControlPlayer)
+            {
+                if (projectileControlPlayer.KillCount == 1 && _updateKillCount == 0)
+                {
+                    _playerController.IncreasePower(projectileControlPlayer.EnergyValue);
+                    projectileControlPlayer.ResetEnergyValue();
+                    _playerController.IncreaseKillCount();
+                    _updateKillCount++;
+                }
+                else if (projectileControlPlayer.KillCount == 2 && _updateKillCount == 1)
+                {
+                    _playerController.IncreasePower(projectileControlPlayer.EnergyValue);
+                    _playerController.IncreaseHealth(_playerController.Health / 2);
+                    projectileControlPlayer.ResetEnergyValue();
+                    _playerController.IncreaseKillCount();
+                    _updateKillCount++;
+                }
+            }
         }
     }
 }

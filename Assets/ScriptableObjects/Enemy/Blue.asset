@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c0ffa187fda4dff94f0e407bde7cde8, type: 3}
   m_Name: Blue
   m_EditorClassIdentifier: 
+  _type: 0
   _attack: 25
   _health: 100
-  _moveSpeed: 0.8
+  _moveSpeed: 0.5
   _energyPoint: 50

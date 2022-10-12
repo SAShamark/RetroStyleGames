@@ -1,6 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Entities.Enemy.EnemyObject;
+using Entities.Player;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Entities.Enemy
 {
@@ -8,14 +12,15 @@ namespace Entities.Enemy
     {
         public static EnemySpawner Instance;
         public List<BaseEnemy> EnemiesContainer { get; private set; }
-        [SerializeField] private Transform _enemyTarget;
+        [SerializeField] private PlayerMovement _target;
         [SerializeField] private List<EnemyData> _enemyDates;
-        [SerializeField] private BaseEnemy _defaultEnemy;
+        [SerializeField] private EnemyData _defaultEnemy;
         [SerializeField] private Transform _enemyContainer;
         private float _startTimeForSpawn = 5f;
         private float _timeForSpawn;
         private float _decreasedSpawnTimeValue = 0.5f;
         private int _countForSpawnEnemy = 1;
+        private EnemyType _enemyType;
 
         private void Start()
         {
@@ -53,23 +58,47 @@ namespace Entities.Enemy
             }
         }
 
+        private void OnDestroy()
+        {
+            foreach (var enemy in EnemiesContainer)
+            {
+                _target.OnTelepot -= enemy.ChangeTarget;
+            }
+            
+        }
+
         private void CreatEnemy()
         {
+            _enemyType = GetEnemyType();
             for (int i = 0; i < _countForSpawnEnemy; i++)
             {
-                var pos = PositionProcessor.GetNewPosition();
-                var enemyPrefab = GetEnemyForSpawn();
-                var enemy = Instantiate(enemyPrefab, pos, Quaternion.identity, _enemyContainer);
-                enemy.Target = _enemyTarget;
+                var newPosition = PositionProcessor.GetNewPosition();
+                var enemyPrefab = GetEnemyForSpawn(_enemyType);
+                var enemy = Instantiate(enemyPrefab, newPosition, Quaternion.identity, _enemyContainer);
+                enemy.OnDeath += RemoveEnemy;
+                enemy.Target = _target.gameObject.transform.parent;
+                _target.OnTelepot += enemy.ChangeTarget;
+                enemy.EnemyStaticData = SearchNeededEnemyData(_enemyType);
                 EnemiesContainer.Add(enemy);
             }
         }
 
-        private BaseEnemy GetEnemyForSpawn()
+        private void RemoveEnemy(BaseEnemy enemy)
         {
-            //var index = Random.Range(1, 6);
-            //return SearchNeededEnemy(index > 1 ? EnemyType.Red : EnemyType.Blue);
-            return SearchNeededEnemy(EnemyType.Blue);
+            enemy.OnDeath -= RemoveEnemy;
+            EnemiesContainer.Remove(enemy);
+        }
+
+        private EnemyType GetEnemyType()
+        {
+           // var index = Random.Range(1, 6);
+           // return index > 1 ? EnemyType.Red : EnemyType.Blue;
+           return EnemyType.Blue;
+        }
+
+        private BaseEnemy GetEnemyForSpawn(EnemyType enemyType)
+        {
+            return SearchNeededEnemy(enemyType);
         }
 
         private BaseEnemy SearchNeededEnemy(EnemyType enemyType)
@@ -82,7 +111,20 @@ namespace Entities.Enemy
                 }
             }
 
-            return _defaultEnemy;
+            return _defaultEnemy.BaseEnemy;
+        }
+
+        private EnemyStaticData SearchNeededEnemyData(EnemyType enemyType)
+        {
+            foreach (var enemyData in _enemyDates)
+            {
+                if (enemyData.EnemyType == enemyType)
+                {
+                    return enemyData.EnemyStaticData;
+                }
+            }
+
+            return _defaultEnemy.EnemyStaticData;
         }
     }
 }

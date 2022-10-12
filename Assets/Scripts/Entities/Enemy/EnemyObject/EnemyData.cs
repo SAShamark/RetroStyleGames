@@ -1,4 +1,5 @@
 ﻿using System;
+using Entities.Enemy.EnemyObject;
 
 namespace Entities.Enemy
 {

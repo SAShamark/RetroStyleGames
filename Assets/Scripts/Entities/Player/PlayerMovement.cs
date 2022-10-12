@@ -1,10 +1,13 @@
-﻿using UI_InputSystem.Base;
+﻿using System;
+using UI_InputSystem.Base;
 using UnityEngine;
 
 namespace Entities.Player
 {
     public class PlayerMovement : MonoBehaviour
     {
+        public event Action<Vector3> OnTelepot;
+
         [SerializeField] private Transform _playerTransform;
         [SerializeField] private Transform _groundChecker;
 
@@ -33,10 +36,17 @@ namespace Entities.Player
             }
             else
             {
-                _playerTransform.position = PositionProcessor.GetNewPosition();
+                TeleportPlayer();
             }
 
             CalculateGravity();
+        }
+
+        private void TeleportPlayer()
+        {
+            Debug.LogError("TeleportPlayer");
+            OnTelepot?.Invoke(_playerTransform.position);
+            _playerTransform.position = PositionProcessor.GetNewPosition();
         }
 
         private void MovePlayer()
