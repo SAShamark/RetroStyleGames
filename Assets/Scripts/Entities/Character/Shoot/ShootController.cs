@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
+using CharacterController = Entities.Character.CharacterController;
 
 namespace Entities.Player.Shoot
 {
     public class ShootController : MonoBehaviour
     {
-        [SerializeField] private PlayerController _playerController;
+        [FormerlySerializedAs("_playerController")] [SerializeField] private CharacterController _characterController;
         private List<ProjectileControlPlayer> ProjectileControlPlayer { get; set; }
         [SerializeField] private ProjectileControl _projectile;
         [SerializeField] private Transform _container;
@@ -48,17 +50,17 @@ namespace Entities.Player.Shoot
             {
                 if (projectileControlPlayer.KillCount == 1 && _updateKillCount == 0)
                 {
-                    _playerController.IncreasePower(projectileControlPlayer.EnergyValue);
+                    _characterController.IncreasePower(projectileControlPlayer.EnergyValue);
                     projectileControlPlayer.ResetEnergyValue();
-                    _playerController.IncreaseKillCount();
+                    _characterController.IncreaseKillCount();
                     _updateKillCount++;
                 }
                 else if (projectileControlPlayer.KillCount == 2 && _updateKillCount == 1)
                 {
-                    _playerController.IncreasePower(projectileControlPlayer.EnergyValue);
-                    _playerController.IncreaseHealth(_playerController.Health / 2);
+                    _characterController.IncreasePower(projectileControlPlayer.EnergyValue);
+                    _characterController.IncreaseHealth(_characterController.Health / 2);
                     projectileControlPlayer.ResetEnergyValue();
-                    _playerController.IncreaseKillCount();
+                    _characterController.IncreaseKillCount();
                     _updateKillCount++;
                 }
             }

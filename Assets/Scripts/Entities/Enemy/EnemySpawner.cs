@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Entities.Character;
 using Entities.Enemy.EnemyObject;
 using Entities.Player;
 using UnityEngine;
@@ -10,7 +11,7 @@ namespace Entities.Enemy
     {
         public static EnemySpawner Instance;
         public List<BaseEnemy> EnemiesContainer { get; private set; }
-        [SerializeField] private PlayerMovement _target;
+        [SerializeField] private CharacterMovement _target;
         [SerializeField] private List<EnemyData> _enemyDates;
         [SerializeField] private EnemyData _defaultEnemy;
         [SerializeField] private Transform _enemyContainer;
@@ -18,7 +19,7 @@ namespace Entities.Enemy
         private float _timeForSpawn;
         private const float DecreasedSpawnTimeValue = 0.5f;
         private int _countForSpawnEnemy = 1;
-        private const float MINSpawnTime = 2;
+        private const float MinSpawnTime = 2;
         private EnemyType _enemyType;
 
         private void Start()
@@ -44,7 +45,7 @@ namespace Entities.Enemy
             while (true)
             {
                 yield return delay;
-                if (_timeForSpawn >= MINSpawnTime)
+                if (_timeForSpawn >= MinSpawnTime)
                 {
                     _timeForSpawn -= DecreasedSpawnTimeValue;
                 }

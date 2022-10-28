@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using CharacterController = Entities.Character.CharacterController;
 
 public class UIPanelController : MonoBehaviour
 {
@@ -22,13 +23,13 @@ public class UIPanelController : MonoBehaviour
     [SerializeField] private GameObject _losePanel;
 
     [Header("Text")] [SerializeField] private TMP_Text _killCountText;
-    private PlayerController _playerController;
+    private CharacterController _characterController;
 
     private void Start()
     {
-        _playerController = PlayerController.Instanse;
-        _playerController.OnDeath += LoseGame;
-        _playerController.OnUltaButton += Interactable;
+        _characterController = CharacterController.Instanse;
+        _characterController.OnDeath += LoseGame;
+        _characterController.OnUltaButton += Interactable;
 
         _shootButton.onClick.AddListener(Shoot);
         _ultaButton.onClick.AddListener(Ulta);
@@ -40,8 +41,8 @@ public class UIPanelController : MonoBehaviour
 
     private void OnDestroy()
     {
-        _playerController.OnDeath -= LoseGame;
-        _playerController.OnUltaButton -= Interactable;
+        _characterController.OnDeath -= LoseGame;
+        _characterController.OnUltaButton -= Interactable;
 
         _shootButton.onClick.RemoveListener(Shoot);
         _ultaButton.onClick.RemoveListener(Ulta);
@@ -83,7 +84,7 @@ public class UIPanelController : MonoBehaviour
         _playPanel.SetActive(false);
         _losePanel.SetActive(true);
         Time.timeScale = 0;
-        _killCountText.text = _playerController.KillCount.ToString();
+        _killCountText.text = _characterController.KillCount.ToString();
     }
 
     private void RestartGame()

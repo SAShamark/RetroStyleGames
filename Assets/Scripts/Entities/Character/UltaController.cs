@@ -1,18 +1,19 @@
 using System.Linq;
 using Entities.Enemy;
 using UnityEngine;
+using CharacterController = Entities.Character.CharacterController;
 
 namespace Entities.Player
 {
     public class UltaController : MonoBehaviour
     {
         private EnemySpawner _enemySpawner;
-        private PlayerController _playerController;
+        private CharacterController _characterController;
 
         private void Start()
         {
             _enemySpawner = EnemySpawner.Instance;
-            _playerController = PlayerController.Instanse;
+            _characterController = CharacterController.Instanse;
             UIPanelController.OnUlta += KillAllEnemy;
         }
 
@@ -35,7 +36,7 @@ namespace Entities.Player
                 }
             }
 
-            _playerController.DecreasePower(_playerController.Power);
+            _characterController.DecreasePower(_characterController.Power);
         }
     }
 }

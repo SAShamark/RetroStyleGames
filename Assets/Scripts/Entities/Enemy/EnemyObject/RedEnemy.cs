@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Entities.Player;
 using UnityEngine;
+using CharacterController = Entities.Character.CharacterController;
 
 namespace Entities.Enemy.EnemyObject
 {
@@ -28,7 +29,7 @@ namespace Entities.Enemy.EnemyObject
         {
             if (other.gameObject.layer == PlayerLayer)
             {
-                var playerController = other.gameObject.GetComponentInChildren<PlayerController>();
+                var playerController = other.gameObject.GetComponentInChildren<CharacterController>();
                 playerController.DecreaseHealth(Attack);
                 Destroy(gameObject);
             }

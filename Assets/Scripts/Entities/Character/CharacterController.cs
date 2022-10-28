@@ -1,11 +1,11 @@
 using System;
 using UnityEngine;
 
-namespace Entities.Player
+namespace Entities.Character
 {
-    public class PlayerController : MonoBehaviour
+    public class CharacterController : MonoBehaviour
     {
-        public static PlayerController Instanse;
+        public static CharacterController Instanse;
         public event Action<bool> OnUltaButton;
         public event Action OnDeath;
         public int KillCount { get; private set; }
