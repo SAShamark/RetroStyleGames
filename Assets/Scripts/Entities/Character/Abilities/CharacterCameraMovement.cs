@@ -1,7 +1,8 @@
-﻿using UI_InputSystem.Base;
+﻿using Entities.Character.Data;
+using UI_InputSystem.Base;
 using UnityEngine;
 
-namespace Entities.Character
+namespace Entities.Character.Abilities
 {
     public class CharacterCameraMovement
     {

@@ -1,36 +1,32 @@
-using System;
 using System.Collections;
-using Entities.Player;
+using Entities.Character;
 using UnityEngine;
-using CharacterController = Entities.Character.CharacterController;
 
 namespace Entities.Enemy.EnemyObject
 {
     public class RedEnemy : BaseEnemy
     {
         [SerializeField] private Transform _model;
-
-        private float _timeToFly = 2;
-        private float _yUpPosition = 1;
+        private const float TimeToFly = 2;
+        private const float YUpPosition = 1;
         private bool _move;
-        private float _fallibilityY = 0.1f;
-        private const int PlayerLayer = 8;
+        private const float FallibilityY = 0.1f;
+        private const int CharacterLayer = 8;
 
-        private IEnumerator _startMoveCorutine;
+        private IEnumerator _startMoveCoroutine;
 
-        protected override void Start()
+        private void Start()
         {
-            base.Start();
-            _startMoveCorutine = StartMove();
-            StartCoroutine(_startMoveCorutine);
+            _startMoveCoroutine = StartMove();
+            StartCoroutine(_startMoveCoroutine);
         }
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.gameObject.layer == PlayerLayer)
+            if (other.gameObject.layer == CharacterLayer)
             {
-                var playerController = other.gameObject.GetComponentInChildren<CharacterController>();
-                playerController.DecreaseHealth(Attack);
+                var characterView = other.gameObject.GetComponent<Character.CharacterController>();
+                //characterView.DecreaseHealth(Attack);
                 Destroy(gameObject);
             }
         }
@@ -42,17 +38,17 @@ namespace Entities.Enemy.EnemyObject
 
         private IEnumerator StartMove()
         {
-            while (_model.position.y <= _yUpPosition - _fallibilityY)
+            while (_model.position.y <= YUpPosition - FallibilityY)
             {
                 var position = _model.position;
-                position = Vector3.Lerp(position, new Vector3(position.x, _yUpPosition, position.z),
+                position = Vector3.Lerp(position, new Vector3(position.x, YUpPosition, position.z),
                     MoveSpeed * Time.deltaTime);
                 _model.position = position;
                 yield return new WaitForEndOfFrame();
             }
 
-            yield return new WaitForSeconds(_timeToFly);
-            while (_model.localPosition.y >= _fallibilityY)
+            yield return new WaitForSeconds(TimeToFly);
+            while (_model.localPosition.y >= FallibilityY)
             {
                 _model.localPosition =
                     Vector3.Lerp(_model.localPosition, new Vector3(0, 0, 0), MoveSpeed * Time.deltaTime);
@@ -66,9 +62,9 @@ namespace Entities.Enemy.EnemyObject
 
         private void OnDestroy()
         {
-            if (_startMoveCorutine != null)
+            if (_startMoveCoroutine != null)
             {
-                StopCoroutine(_startMoveCorutine);
+                StopCoroutine(_startMoveCoroutine);
             }
         }
 

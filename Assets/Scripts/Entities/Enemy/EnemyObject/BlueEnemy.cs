@@ -11,17 +11,16 @@ namespace Entities.Enemy.EnemyObject
         [SerializeField] private int _countProjectile;
         private List<ProjectileControlEnemy> _projectileControls;
         private ObjectPool<ProjectileControl> _objectPool;
-        private IEnumerator _shootCorutine;
+        private IEnumerator _shootCoroutine;
         private const float ShootDelay = 3;
         private bool _shoot;
 
-        protected override void Start()
+        protected void Start()
         {
-            base.Start();
             _objectPool =
                 new ObjectPool<ProjectileControl>(_projectile, _countProjectile, transform);
             _projectileControls = new List<ProjectileControlEnemy>();
-            _shootCorutine = Shoot();
+            _shootCoroutine = Shoot();
         }
 
         public override void ChangeTarget(Vector3 newTarget)
@@ -34,18 +33,18 @@ namespace Entities.Enemy.EnemyObject
 
         private void Update()
         {
-            if (Vector3.Distance(Target.position, transform.position) <= Our.stoppingDistance && !_shoot)
+            if (Vector3.Distance(Target.position, transform.position) <= NavMeshAgent.stoppingDistance && !_shoot)
             {
                 _shoot = true;
-                StartCoroutine(_shootCorutine);
+                StartCoroutine(_shootCoroutine);
             }
             else if (!_shoot)
             {
                 MoveToTarget();
             }
-            else if (Vector3.Distance(Target.position, transform.position) > Our.stoppingDistance)
+            else if (Vector3.Distance(Target.position, transform.position) > NavMeshAgent.stoppingDistance)
             {
-                StopCoroutine(_shootCorutine);
+                StopCoroutine(_shootCoroutine);
                 _shoot = false;
             }
         }

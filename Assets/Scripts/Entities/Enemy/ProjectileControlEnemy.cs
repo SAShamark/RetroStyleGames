@@ -1,7 +1,6 @@
 ﻿using System.Collections;
-using Entities.Player;
+using Entities.Character;
 using UnityEngine;
-using CharacterController = Entities.Character.CharacterController;
 
 namespace Entities.Enemy
 {
@@ -27,8 +26,8 @@ namespace Entities.Enemy
             base.OnTriggerEnter(other);
             if (other.gameObject.layer == PlayerLayer)
             {
-                var playerController = other.gameObject.GetComponentInChildren<CharacterController>();
-                playerController.DecreasePower(AttackValue);
+                var playerController = other.gameObject.GetComponentInChildren<Character.CharacterController>();
+                playerController.CharacterStatsControl.DecreasePower(AttackValue);
                 TurnOffGameObject();
             }
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using Entities.Character;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -6,42 +7,36 @@ namespace Entities.Enemy.EnemyObject
 {
     public abstract class BaseEnemy : MonoBehaviour
     {
-        public event Action<BaseEnemy> OnDeath;
-        public EnemyType Type { get; set; }
         public Transform Target { get; set; }
-        public EnemyStaticData EnemyStaticData { get; set; }
+        public EnemyType EnemyType { get; private set; }
         public float EnergyPoint { get; private set; }
         public float MoveSpeed { get; private set; }
         public float Health { get; private set; }
         public float Attack { get; private set; }
-        private EntitiesFactory _entitiesFactory;
+        
+        public event Action<BaseEnemy> OnDeath;
 
-        protected NavMeshAgent Our;
-        private float _minHealth = 0;
-
-
-        protected virtual void Start()
+        protected NavMeshAgent NavMeshAgent;
+        private const float MinHealth = 0;
+        
+        public void Init(EnemyStaticData enemyStaticData, Transform transformTarget)
         {
-            Init();
-        }
-
-        private void Init()
-        {
-            Type = EnemyStaticData.Type;
-            MoveSpeed = EnemyStaticData.MoveSpeed;
-            Health = EnemyStaticData.Health;
-            Attack = EnemyStaticData.Attack;
-            EnergyPoint = EnemyStaticData.EnergyPoint;
-            Our = GetComponent<NavMeshAgent>();
-            Our.speed = MoveSpeed;
+            Target = transformTarget;
+            EnemyType = enemyStaticData.Type;
+            MoveSpeed = enemyStaticData.MoveSpeed;
+            Health = enemyStaticData.Health;
+            Attack = enemyStaticData.Attack;
+            EnergyPoint = enemyStaticData.EnergyPoint;
+            NavMeshAgent = GetComponent<NavMeshAgent>();
+            NavMeshAgent.speed = MoveSpeed;
         }
 
         public void DecreaseHealth(float value)
         {
             Health -= value;
-            if (Health <= _minHealth)
+            if (Health <= MinHealth)
             {
-                Health = _minHealth;
+                Health = MinHealth;
                 Death();
             }
         }
@@ -57,7 +52,7 @@ namespace Entities.Enemy.EnemyObject
 
         protected virtual void MoveToTarget()
         {
-            Our.destination = Target.position;
+            NavMeshAgent.destination = Target.position;
         }
     }
 }

@@ -5,14 +5,13 @@ using UnityEngine;
 
 namespace Entities.Enemy
 {
-    public class EntitiesFactory : MonoBehaviour
+    public class EnemyFactory : EntitiesFactory
     {
-        public static EntitiesFactory Instance;
-        public List<BaseEnemy> EnemiesContainer { get; private set; }
-        [SerializeField] private CharacterView _characterPrefab;
+        [SerializeField] private EnemyRegistry _enemyRegistry;
         [SerializeField] private List<EnemyData> _enemyDates;
         [SerializeField] private EnemyData _defaultEnemy;
         [SerializeField] private Transform _enemyContainer;
+
         private const float StartTimeForSpawn = 5f;
         private float _timeForSpawn;
         private const float DecreasedSpawnTimeValue = 0.5f;
@@ -20,24 +19,18 @@ namespace Entities.Enemy
         private const float MinSpawnTime = 2;
         private EnemyType _enemyType;
 
-        private void Start()
+        public override void Start()
         {
-            if (Instance == null)
-            {
-                Instance = this;
-            }
-            else
-            {
-                Destroy(gameObject);
-                return;
-            }
-
-            EnemiesContainer = new List<BaseEnemy>();
             _timeForSpawn = StartTimeForSpawn;
-            StartCoroutine(SpawnEnemyMethod());
+            Spawn();
         }
 
-        private IEnumerator SpawnEnemyMethod()
+        public override void Spawn()
+        {
+            StartCoroutine(Spawner());
+        }
+
+        private IEnumerator Spawner()
         {
             var delay = new WaitForSeconds(_timeForSpawn);
             while (true)
@@ -56,35 +49,21 @@ namespace Entities.Enemy
             }
         }
 
-        private void OnDestroy()
-        {
-            /*foreach (var enemy in EnemiesContainer)
-            {
-                _target.OnTelepot -= enemy.ChangeTarget;
-            }*/
-        }
 
         private void CreatEnemy()
         {
             _enemyType = GetEnemyType();
             for (int i = 0; i < _countForSpawnEnemy; i++)
             {
-                var newPosition = PositionProcessor.GetNewPosition();
+                var positionForSpawn = PositionProcessor.GetNewPosition();
                 var enemyPrefab = GetEnemyForSpawn(_enemyType);
-                var enemy = Instantiate(enemyPrefab, newPosition, Quaternion.identity, _enemyContainer);
-                enemy.OnDeath += RemoveEnemy;
-                enemy.Target = _characterPrefab.gameObject.transform.parent;
-                //_target.OnTelepot += enemy.ChangeTarget;
-                enemy.EnemyStaticData = SearchNeededEnemyData(_enemyType);
-                EnemiesContainer.Add(enemy);
+                var enemy = Instantiate(enemyPrefab, positionForSpawn, Quaternion.identity, _enemyContainer);
+                //enemy.Init(SearchNeededEnemyData(_enemyType),);
+                _enemyRegistry.AddEnemy(enemy);
             }
         }
 
-        private void RemoveEnemy(BaseEnemy enemy)
-        {
-            enemy.OnDeath -= RemoveEnemy;
-            EnemiesContainer.Remove(enemy);
-        }
+        
 
         //Blue:Red = 1:4
         private EnemyType GetEnemyType()
@@ -94,11 +73,6 @@ namespace Entities.Enemy
         }
 
         private BaseEnemy GetEnemyForSpawn(EnemyType enemyType)
-        {
-            return SearchNeededEnemy(enemyType);
-        }
-
-        private BaseEnemy SearchNeededEnemy(EnemyType enemyType)
         {
             foreach (var enemyData in _enemyDates)
             {

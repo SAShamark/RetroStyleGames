@@ -1,6 +1,8 @@
-namespace Entities.Character
+using System;
+
+namespace Entities.Character.Abilities
 {
-    public class CharacterModel
+    public class CharacterStatsControl
     {
         public event Action<bool> OnUltaButton;
         public event Action OnDeath;
@@ -12,17 +14,16 @@ namespace Entities.Character
         private float _health;
         private float _power;
 
-
         private const float MaxPower = 100;
         private const float MinPower = 0;
         private readonly float _maxHealth;
         private const float MinHealth = 0;
 
-        public CharacterController(float health, float power)
+        public CharacterStatsControl(CharacterData characterData)
         {
-            _health = health;
+            _health = characterData.Health;
             _maxHealth = _health;
-            _power = power;
+            _power = characterData.Power;
         }
 
         public void IncreaseKillCount()
@@ -30,9 +31,9 @@ namespace Entities.Character
             KillCount++;
         }
 
-        public void IncreasePower(float value)
+        public void IncreasePower(float powerValue)
         {
-            _power += value;
+            _power += powerValue;
             if (_power >= MaxPower)
             {
                 _power = MaxPower;
@@ -40,9 +41,9 @@ namespace Entities.Character
             }
         }
 
-        public void IncreaseHealth(float value)
+        public void IncreaseHealth(float healthValue)
         {
-            _health += value;
+            _health += healthValue;
             if (_health >= _maxHealth)
             {
                 _health = _maxHealth;
@@ -54,9 +55,9 @@ namespace Entities.Character
             OnUltaButton?.Invoke(isActive);
         }
 
-        public void DecreasePower(float value)
+        public void DecreasePower(float powerValue)
         {
-            _power -= value;
+            _power -= powerValue;
             UpdatePower(false);
             if (_power < MinPower)
             {
@@ -64,9 +65,9 @@ namespace Entities.Character
             }
         }
 
-        public void DecreaseHealth(float value)
+        public void DecreaseHealth(float healthValue)
         {
-            _health -= value;
+            _health -= healthValue;
             if (_health < MinHealth)
             {
                 _health = MinHealth;

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Entities.Character
+namespace Entities.Character.Data
 {
     [Serializable]
     public class CharacterCameraData

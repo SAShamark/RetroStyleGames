@@ -1,25 +1,20 @@
 using System.Collections.Generic;
-using Entities.Player.Shoot;
+using Entities.Character.Abilities;
+using Entities.Character.Data;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-namespace Entities.Character.Shoot
+namespace Entities.Character
 {
-    public class ShootController : MonoBehaviour
+    public class ShootingCharacter
     {
-        [FormerlySerializedAs("_playerController")] [SerializeField] private CharacterController _characterController;
-        private List<ProjectileControlPlayer> ProjectileControlPlayer { get; set; }
-        [SerializeField] private ProjectileControl _projectile;
-        [SerializeField] private Transform _container;
-        [SerializeField] private Transform _projectileStartPosition;
-        [SerializeField] private int _countProjectile;
-        [SerializeField] private Transform _camera;
+        /*private List<ProjectileControlPlayer> ProjectileControlPlayer { get; set; }
         private ObjectPool<ProjectileControl> _objectPool;
+        private CharacterShootData _characterShootData;
         private int _updateKillCount;
 
         private void Start()
         {
-            _objectPool = new ObjectPool<ProjectileControl>(_projectile, _countProjectile, _container);
+            _objectPool = new ObjectPool<ProjectileControl>(_characterShootData.Projectile, _characterShootData.CountProjectile, _characterShootData.Container);
             ProjectileControlPlayer = new List<ProjectileControlPlayer>();
             UIPanelController.OnShoot += GetProjectile;
         }
@@ -35,8 +30,8 @@ namespace Entities.Character.Shoot
             var projectile = _objectPool.GetFreeElement();
             var projectileControlPlayer = projectile.GetComponent<ProjectileControlPlayer>();
             ProjectileControlPlayer.Add(projectileControlPlayer);
-            projectile.transform.rotation = Quaternion.Euler(_camera.eulerAngles.x, transform.eulerAngles.y, 0);
-            projectile.transform.position = _projectileStartPosition.position;
+            projectile.transform.rotation = Quaternion.Euler(_characterShootData.Camera.eulerAngles.x, transform.eulerAngles.y, 0);
+            projectile.transform.position = _characterShootData.ProjectileStartPosition.position;
         }
 
         private void Update()
@@ -48,7 +43,7 @@ namespace Entities.Character.Shoot
         {
             foreach (var projectileControlPlayer in ProjectileControlPlayer)
             {
-                if (projectileControlPlayer.KillCount == 1 && _updateKillCount == 0)
+                /*if (projectileControlPlayer.KillCount == 1 && _updateKillCount == 0)
                 {
                     _characterController.IncreasePower(projectileControlPlayer.EnergyValue);
                     projectileControlPlayer.ResetEnergyValue();
@@ -62,8 +57,8 @@ namespace Entities.Character.Shoot
                     projectileControlPlayer.ResetEnergyValue();
                     _characterController.IncreaseKillCount();
                     _updateKillCount++;
-                }
+                }#1#
             }
-        }
+        }*/
     }
 }

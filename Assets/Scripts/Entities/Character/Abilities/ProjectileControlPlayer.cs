@@ -2,14 +2,11 @@
 using Entities.Enemy;
 using Entities.Enemy.EnemyObject;
 using UnityEngine;
-using CharacterController = Entities.Character.CharacterController;
 
-namespace Entities.Player.Shoot
+namespace Entities.Character.Abilities
 {
     public sealed class ProjectileControlPlayer : ProjectileControl
     {
-        private CharacterController _characterController;
-        private EntitiesFactory _entitiesFactory;
         public int KillCount { get; private set; }
         public float EnergyValue { get; private set; }
         private const int EnemyLayer = 9;
@@ -17,7 +14,6 @@ namespace Entities.Player.Shoot
 
         private void Start()
         {
-            _entitiesFactory = EntitiesFactory.Instance;
            // _characterController = CharacterController.Instanse;
             TurnOffProjectileCoroutine = TurnOffProjectile(_lifeTime);
             StartCoroutine(TurnOffProjectileCoroutine);
@@ -48,17 +44,17 @@ namespace Entities.Player.Shoot
         private void TryGetNextEnemy()
         {
             var doIt = Random.Range(0, 10);
-            if (doIt == 0 || _characterController.Health < _characterController.MaxHealth / 10)
+            /*if (doIt == 0 || _characterController.Health < _characterController.MaxHealth / 10)
             {
                 _closestEnemy = FindClosestEnemy();
-            }
+            }*/
         }
 
         private BaseEnemy FindClosestEnemy()
         {
             float distance = Mathf.Infinity;
             Vector3 position = transform.position;
-            foreach (var enemy in _entitiesFactory.EnemiesContainer)
+            /*foreach (var enemy in _entitiesFactory.EnemiesContainer)
             {
                 Vector3 diff = enemy.transform.position - position;
                 float curDistance = diff.sqrMagnitude;
@@ -67,7 +63,7 @@ namespace Entities.Player.Shoot
                     _closestEnemy = enemy;
                     distance = curDistance;
                 }
-            }
+            }*/
 
             return _closestEnemy;
         }

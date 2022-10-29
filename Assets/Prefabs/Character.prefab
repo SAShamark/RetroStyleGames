@@ -126,8 +126,7 @@ GameObject:
   - component: {fileID: 1759085736556022046}
   - component: {fileID: 1759085736556022045}
   - component: {fileID: 1759085736556022044}
-  - component: {fileID: 1759085736556022114}
-  - component: {fileID: 1759085736556022115}
+  - component: {fileID: 3155883509187349116}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -183,7 +182,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 90
   m_CollisionDetection: 0
---- !u!114 &1759085736556022114
+--- !u!114 &3155883509187349116
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -192,24 +191,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1759085736556022043}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d7b843f48605add4d9798313935ac718, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1759085736556022115
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1759085736556022043}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37eb375d2c28ee24a9b897951a70312f, type: 3}
+  m_Script: {fileID: 11500000, guid: ead809f95f62493a88a8fe4266f0d676, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _moveSpeed: 8
   _characterCameraData:
-    _cameraTransform: {fileID: 0}
+    _cameraTransform: {fileID: 1759085735962070423}
     _mouseSensX: 75
     _mouseSensY: 75
     _minClampVertical: -60
@@ -217,6 +204,11 @@ MonoBehaviour:
   _characterData:
     _health: 0
     _power: 0
+  _projectile: {fileID: 0}
+  _container: {fileID: 0}
+  _projectileStartPosition: {fileID: 0}
+  _countProjectile: 0
+  _camera: {fileID: 0}
 --- !u!1 &1759085737124820998
 GameObject:
   m_ObjectHideFlags: 0

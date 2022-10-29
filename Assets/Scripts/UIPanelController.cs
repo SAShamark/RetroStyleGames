@@ -1,10 +1,9 @@
 using System;
-using Entities.Player;
+using Entities.Character;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using CharacterController = Entities.Character.CharacterController;
 
 public class UIPanelController : MonoBehaviour
 {
@@ -23,11 +22,9 @@ public class UIPanelController : MonoBehaviour
     [SerializeField] private GameObject _losePanel;
 
     [Header("Text")] [SerializeField] private TMP_Text _killCountText;
-    private CharacterController _characterController;
 
     private void Start()
     {
-        //_characterController = CharacterController.Instanse;
         //_characterController.OnDeath += LoseGame;
         //_characterController.OnUltaButton += Interactable;
 
@@ -41,8 +38,8 @@ public class UIPanelController : MonoBehaviour
 
     private void OnDestroy()
     {
-        _characterController.OnDeath -= LoseGame;
-        _characterController.OnUltaButton -= Interactable;
+        //_characterController.OnDeath -= LoseGame;
+        //_characterController.OnUltaButton -= Interactable;
 
         _shootButton.onClick.RemoveListener(Shoot);
         _ultaButton.onClick.RemoveListener(Ulta);
@@ -79,12 +76,12 @@ public class UIPanelController : MonoBehaviour
         _pausePanel.SetActive(false);
     }
 
-    private void LoseGame()
+    public void LoseGame()
     {
         _playPanel.SetActive(false);
         _losePanel.SetActive(true);
         Time.timeScale = 0;
-        _killCountText.text = _characterController.KillCount.ToString();
+        //_killCountText.text = _characterController.KillCount.ToString();
     }
 
     private void RestartGame()
