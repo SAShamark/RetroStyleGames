@@ -14,7 +14,7 @@ namespace Entities.Enemy.EnemyObject
         public float MoveSpeed { get; private set; }
         public float Health { get; private set; }
         public float Attack { get; private set; }
-        private EnemySpawner _enemySpawner;
+        private EntitiesFactory _entitiesFactory;
 
         protected NavMeshAgent Our;
         private float _minHealth = 0;

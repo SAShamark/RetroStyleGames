@@ -27,9 +27,9 @@ public class UIPanelController : MonoBehaviour
 
     private void Start()
     {
-        _characterController = CharacterController.Instanse;
-        _characterController.OnDeath += LoseGame;
-        _characterController.OnUltaButton += Interactable;
+        //_characterController = CharacterController.Instanse;
+        //_characterController.OnDeath += LoseGame;
+        //_characterController.OnUltaButton += Interactable;
 
         _shootButton.onClick.AddListener(Shoot);
         _ultaButton.onClick.AddListener(Ulta);

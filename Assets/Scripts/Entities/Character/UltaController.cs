@@ -1,19 +1,18 @@
 using System.Linq;
 using Entities.Enemy;
 using UnityEngine;
-using CharacterController = Entities.Character.CharacterController;
 
-namespace Entities.Player
+namespace Entities.Character
 {
     public class UltaController : MonoBehaviour
     {
-        private EnemySpawner _enemySpawner;
+        private EntitiesFactory _entitiesFactory;
         private CharacterController _characterController;
 
         private void Start()
         {
-            _enemySpawner = EnemySpawner.Instance;
-            _characterController = CharacterController.Instanse;
+            _entitiesFactory = EntitiesFactory.Instance;
+           // _characterController = CharacterController.Instanse;
             UIPanelController.OnUlta += KillAllEnemy;
         }
 
@@ -25,18 +24,18 @@ namespace Entities.Player
 
         private void KillAllEnemy()
         {
-            if (_enemySpawner.EnemiesContainer != null)
+            if (_entitiesFactory.EnemiesContainer != null)
             {
-                var enemyCount = _enemySpawner.EnemiesContainer.Count;
+                var enemyCount = _entitiesFactory.EnemiesContainer.Count;
                 for (int i = enemyCount; i > 0; i--)
                 {
-                    var enemy = _enemySpawner.EnemiesContainer.Last();
-                    _enemySpawner.EnemiesContainer.Remove(enemy);
+                    var enemy = _entitiesFactory.EnemiesContainer.Last();
+                    _entitiesFactory.EnemiesContainer.Remove(enemy);
                     Destroy(enemy.gameObject);
                 }
             }
 
-            _characterController.DecreasePower(_characterController.Power);
+            //_characterController.DecreasePower(_characterController.Power);
         }
     }
 }

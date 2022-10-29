@@ -1,17 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
-using Entities.Character;
 using Entities.Enemy.EnemyObject;
-using Entities.Player;
 using UnityEngine;
 
 namespace Entities.Enemy
 {
-    public class EnemySpawner : MonoBehaviour
+    public class EntitiesFactory : MonoBehaviour
     {
-        public static EnemySpawner Instance;
+        public static EntitiesFactory Instance;
         public List<BaseEnemy> EnemiesContainer { get; private set; }
-        [SerializeField] private CharacterMovement _target;
+        [SerializeField] private CharacterView _characterPrefab;
         [SerializeField] private List<EnemyData> _enemyDates;
         [SerializeField] private EnemyData _defaultEnemy;
         [SerializeField] private Transform _enemyContainer;
@@ -60,10 +58,10 @@ namespace Entities.Enemy
 
         private void OnDestroy()
         {
-            foreach (var enemy in EnemiesContainer)
+            /*foreach (var enemy in EnemiesContainer)
             {
                 _target.OnTelepot -= enemy.ChangeTarget;
-            }
+            }*/
         }
 
         private void CreatEnemy()
@@ -75,8 +73,8 @@ namespace Entities.Enemy
                 var enemyPrefab = GetEnemyForSpawn(_enemyType);
                 var enemy = Instantiate(enemyPrefab, newPosition, Quaternion.identity, _enemyContainer);
                 enemy.OnDeath += RemoveEnemy;
-                enemy.Target = _target.gameObject.transform.parent;
-                _target.OnTelepot += enemy.ChangeTarget;
+                enemy.Target = _characterPrefab.gameObject.transform.parent;
+                //_target.OnTelepot += enemy.ChangeTarget;
                 enemy.EnemyStaticData = SearchNeededEnemyData(_enemyType);
                 EnemiesContainer.Add(enemy);
             }

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
+using Entities.Player.Shoot;
 using UnityEngine;
 using UnityEngine.Serialization;
-using CharacterController = Entities.Character.CharacterController;
 
-namespace Entities.Player.Shoot
+namespace Entities.Character.Shoot
 {
     public class ShootController : MonoBehaviour
     {

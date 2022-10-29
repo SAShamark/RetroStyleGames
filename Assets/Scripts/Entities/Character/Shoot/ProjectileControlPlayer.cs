@@ -9,7 +9,7 @@ namespace Entities.Player.Shoot
     public sealed class ProjectileControlPlayer : ProjectileControl
     {
         private CharacterController _characterController;
-        private EnemySpawner _enemySpawner;
+        private EntitiesFactory _entitiesFactory;
         public int KillCount { get; private set; }
         public float EnergyValue { get; private set; }
         private const int EnemyLayer = 9;
@@ -17,8 +17,8 @@ namespace Entities.Player.Shoot
 
         private void Start()
         {
-            _enemySpawner = EnemySpawner.Instance;
-            _characterController = CharacterController.Instanse;
+            _entitiesFactory = EntitiesFactory.Instance;
+           // _characterController = CharacterController.Instanse;
             TurnOffProjectileCoroutine = TurnOffProjectile(_lifeTime);
             StartCoroutine(TurnOffProjectileCoroutine);
         }
@@ -58,7 +58,7 @@ namespace Entities.Player.Shoot
         {
             float distance = Mathf.Infinity;
             Vector3 position = transform.position;
-            foreach (var enemy in _enemySpawner.EnemiesContainer)
+            foreach (var enemy in _entitiesFactory.EnemiesContainer)
             {
                 Vector3 diff = enemy.transform.position - position;
                 float curDistance = diff.sqrMagnitude;

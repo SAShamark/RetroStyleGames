@@ -4,21 +4,22 @@ using UnityEngine;
 
 namespace Entities.Character
 {
-    public class CharacterMovement : MonoBehaviour
+    public class CharacterMovement
     {
         public event Action<Vector3> OnTelepot;
 
-        private Transform _characterTransform;
-        [SerializeField] [Range(2f, 10f)] private float _moveSpeed = 8;
-
+        private readonly Transform _characterTransform;
+        private readonly float _moveSpeed;
         private const float MinCharacterYPosition = -1;
 
-        private void Start()
+        public CharacterMovement(float moveSpeed,Transform characterTransform)
         {
-            _characterTransform = GetComponent<Transform>();
+            _moveSpeed = moveSpeed;
+            _characterTransform = characterTransform;
         }
 
-        private void FixedUpdate()
+
+        public void FixedUpdate()
         {
             if (_characterTransform.position.y > MinCharacterYPosition)
             {
@@ -36,7 +37,7 @@ namespace Entities.Character
             _characterTransform.position = PositionProcessor.GetNewPosition();
         }
 
-        private void MoveCharacter()
+        public void MoveCharacter()
         {
             _characterTransform.position += CharacterMovementDirection();
         }
