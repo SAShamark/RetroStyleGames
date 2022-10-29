@@ -1,4 +1,5 @@
 using System;
+using Entities.Character.Data;
 
 namespace Entities.Character.Abilities
 {

@@ -26,8 +26,6 @@ namespace Entities.Character.Abilities
             _characterCameraData = characterCameraData;
             _characterTransform = characterTransform;
         }
-
-
         public void CameraMovement()
         {
             CameraHorizontalMovement();

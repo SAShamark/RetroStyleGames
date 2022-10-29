@@ -1,13 +1,11 @@
 using System.Collections.Generic;
-using Entities.Character;
 using Entities.Enemy.EnemyObject;
-using UnityEngine;
 
 namespace Entities.Enemy
 {
-    public class EnemyRegistry : MonoBehaviour
+    public class EnemyRegistry
     {
-        public List<BaseEnemy> EnemiesContainer;
+        public List<BaseEnemy> EnemiesContainer { get; private set; }
 
         private void Start()
         {

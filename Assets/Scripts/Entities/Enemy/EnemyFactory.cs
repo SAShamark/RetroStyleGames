@@ -2,16 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using Entities.Enemy.EnemyObject;
 using UnityEngine;
+using Zenject;
+using CharacterController = Entities.Character.CharacterController;
 
 namespace Entities.Enemy
 {
-    public class EnemyFactory : EntitiesFactory
+    public class EnemyFactory : MonoBehaviour
     {
-        [SerializeField] private EnemyRegistry _enemyRegistry;
+        public EnemyRegistry EnemyRegistry { get; private set; }
+
+        
         [SerializeField] private List<EnemyData> _enemyDates;
         [SerializeField] private EnemyData _defaultEnemy;
         [SerializeField] private Transform _enemyContainer;
-
+        
+        private CharacterController _characterController;
         private const float StartTimeForSpawn = 5f;
         private float _timeForSpawn;
         private const float DecreasedSpawnTimeValue = 0.5f;
@@ -19,13 +24,19 @@ namespace Entities.Enemy
         private const float MinSpawnTime = 2;
         private EnemyType _enemyType;
 
-        public override void Start()
+        [Inject]
+        private void Construct(CharacterController characterController)
+        {
+            _characterController = characterController;
+        }
+        public void Start()
         {
             _timeForSpawn = StartTimeForSpawn;
+            EnemyRegistry = new EnemyRegistry();
             Spawn();
         }
 
-        public override void Spawn()
+        private void Spawn()
         {
             StartCoroutine(Spawner());
         }
@@ -58,8 +69,8 @@ namespace Entities.Enemy
                 var positionForSpawn = PositionProcessor.GetNewPosition();
                 var enemyPrefab = GetEnemyForSpawn(_enemyType);
                 var enemy = Instantiate(enemyPrefab, positionForSpawn, Quaternion.identity, _enemyContainer);
-                //enemy.Init(SearchNeededEnemyData(_enemyType),);
-                _enemyRegistry.AddEnemy(enemy);
+                enemy.Init(SearchNeededEnemyData(_enemyType),_characterController.transform);
+                EnemyRegistry.AddEnemy(enemy);
             }
         }
 
