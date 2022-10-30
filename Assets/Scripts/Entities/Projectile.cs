@@ -3,31 +3,26 @@ using UnityEngine;
 
 namespace Entities
 {
-    public abstract class ProjectileControl : MonoBehaviour
+    public abstract class Projectile : MonoBehaviour
     {
         public float AttackValue { get; set; }
         [SerializeField] private LayerMask _layerMask;
         [SerializeField] protected float _moveSpeed = 3f;
         [SerializeField] protected float _lifeTime = 5;
         protected IEnumerator TurnOffProjectileCoroutine;
-        private bool _move = true;
 
 
         private void Update()
         {
-            if (_move)
-            {
-                Move();
-            }
+            MoveProjectile();
         }
 
         protected virtual void OnTriggerEnter(Collider other)
         {
             var triggerEnterCountLayer = ((1 << other.gameObject.layer) & _layerMask);
-            
+
             if (triggerEnterCountLayer != 0)
             {
-                gameObject.SetActive(false);
                 if (TurnOffProjectileCoroutine != null)
                 {
                     StopCoroutine(TurnOffProjectileCoroutine);
@@ -43,6 +38,8 @@ namespace Entities
                 StopCoroutine(TurnOffProjectileCoroutine);
             }
         }
-        protected abstract void Move();
+
+        protected abstract IEnumerator TurnOffProjectile(float delay);
+        protected abstract void MoveProjectile();
     }
 }

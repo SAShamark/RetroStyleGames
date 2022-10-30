@@ -27,6 +27,11 @@ namespace Entities.Character.Abilities
             _power = characterData.Power;
         }
 
+        private void UpdatePower(bool isActive)
+        {
+            OnUltaButton?.Invoke(isActive);
+        }
+        
         public void IncreaseKillCount()
         {
             KillCount++;
@@ -49,11 +54,6 @@ namespace Entities.Character.Abilities
             {
                 _health = _maxHealth;
             }
-        }
-
-        private void UpdatePower(bool isActive)
-        {
-            OnUltaButton?.Invoke(isActive);
         }
 
         public void DecreasePower(float powerValue)
@@ -79,6 +79,11 @@ namespace Entities.Character.Abilities
         private void Death()
         {
             OnDeath?.Invoke();
+        }
+        
+        public bool IsReboundProjectile()
+        {
+            return MaxHealth - Health > 10;
         }
     }
 }

@@ -1,6 +1,8 @@
 using System.Collections;
 using Entities.Character;
 using UnityEngine;
+using Zenject;
+using CharacterController = Entities.Character.CharacterController;
 
 namespace Entities.Enemy.EnemyObject
 {
@@ -14,7 +16,7 @@ namespace Entities.Enemy.EnemyObject
         private const int CharacterLayer = 8;
 
         private IEnumerator _startMoveCoroutine;
-
+       
         private void Start()
         {
             _startMoveCoroutine = StartMove();
@@ -25,8 +27,8 @@ namespace Entities.Enemy.EnemyObject
         {
             if (other.gameObject.layer == CharacterLayer)
             {
-                var characterView = other.gameObject.GetComponent<Character.CharacterController>();
-                //characterView.DecreaseHealth(Attack);
+                var characterView = other.gameObject.GetComponent<CharacterController>();
+                characterView.CharacterStatsControl.DecreaseHealth(Attack);
                 Destroy(gameObject);
             }
         }

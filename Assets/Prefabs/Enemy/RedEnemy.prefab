@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 853839891476187877}
-  - component: {fileID: 853839891476187872}
   - component: {fileID: 853839891476187879}
   - component: {fileID: 853839891476187878}
+  - component: {fileID: 853839891476187872}
   m_Layer: 9
   m_Name: RedEnemy
   m_TagString: Untagged
@@ -35,21 +35,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &853839891476187872
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 853839891476187865}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9fa1de119bfcb5546839701c6f98ecaf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _model: {fileID: 4819273930160391322}
-  _navMesh: {fileID: 853839891476187879}
-  _rigidbody: {fileID: 853839891476187878}
 --- !u!195 &853839891476187879
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -88,6 +73,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &853839891476187872
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 853839891476187865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fa1de119bfcb5546839701c6f98ecaf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _model: {fileID: 4819273930160391322}
 --- !u!1 &1885709565461376169
 GameObject:
   m_ObjectHideFlags: 0

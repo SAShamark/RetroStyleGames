@@ -16,7 +16,11 @@ public class ObjectPool<T> where T : MonoBehaviour
 
         CreatPool(count);
     }
-
+    public ObjectPool(T prefab, int count)
+    {
+        Prefab = prefab;
+        CreatPool(count);
+    }
     private void CreatPool(int count)
     {
         _pool = new List<T>();

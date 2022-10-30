@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Entities.Enemy
 {
-    public sealed class ProjectileControlEnemy : ProjectileControl
+    public sealed class ProjectileEnemy : Projectile
     {
         public Transform Target { get; set; }
         private Vector3 _lastTargetPosition;
@@ -28,7 +28,7 @@ namespace Entities.Enemy
             {
                 var playerController = other.gameObject.GetComponentInChildren<Character.CharacterController>();
                 playerController.CharacterStatsControl.DecreasePower(AttackValue);
-                TurnOffGameObject();
+                TurnOffProjectile();
             }
         }
 
@@ -38,9 +38,9 @@ namespace Entities.Enemy
             _loseTarget = false;
         }
 
-        private IEnumerator TurnOffProjectile(float lifeTime)
+        protected override IEnumerator TurnOffProjectile(float delay)
         {
-            yield return new WaitForSeconds(lifeTime);
+            yield return new WaitForSeconds(delay);
             transform.parent = _startParent;
             gameObject.SetActive(false);
         }
@@ -51,14 +51,14 @@ namespace Entities.Enemy
             _lastTargetPosition = lastPosition;
         }
 
-        protected override void Move()
+        protected override void MoveProjectile()
         {
             var newPosition = Target.position;
             if (_loseTarget)
             {
                 if (Vector3.Distance(transform.position, _lastTargetPosition) <= 0.2f)
                 {
-                    TurnOffGameObject();
+                    TurnOffProjectile();
                     return;
                 }
 
@@ -68,7 +68,7 @@ namespace Entities.Enemy
             transform.position += (newPosition - transform.position).normalized * (_moveSpeed * Time.deltaTime);
         }
 
-        private void TurnOffGameObject()
+        private void TurnOffProjectile()
         {
             gameObject.SetActive(false);
             transform.parent = _startParent;

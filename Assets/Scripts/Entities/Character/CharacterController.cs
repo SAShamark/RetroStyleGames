@@ -13,10 +13,12 @@ namespace Entities.Character
         [SerializeField] [Range(2f, 10f)] private float _moveSpeed = 8;
         [SerializeField] private CharacterCameraData _characterCameraData;
         [SerializeField] private CharacterData _characterData;
+        [SerializeField] private CharacterShootData _characterShootData;
 
         private CharacterMovement _characterMovement;
         private CharacterCameraMovement _characterCameraMovement;
         private UltimateSkill _ultimateSkill;
+        private ShootingCharacter _shootingCharacter;
 
         private void Start()
         {
@@ -24,8 +26,12 @@ namespace Entities.Character
             _characterMovement = new CharacterMovement(_moveSpeed, transform);
             _characterCameraMovement = new CharacterCameraMovement(_characterCameraData, transform);
             _ultimateSkill = new UltimateSkill();
-            UIPanelController.OnUltimateSkill += _ultimateSkill.UseSkill;
+            _shootingCharacter = new ShootingCharacter(_characterShootData, CharacterStatsControl);
+
+            GamePanelView.OnUltimateSkill += _ultimateSkill.UseSkill;
+            GamePanelView.OnShoot += _shootingCharacter.GetProjectile;
         }
+        
         private void FixedUpdate()
         {
             _characterMovement.MoveCharacter();
@@ -34,7 +40,10 @@ namespace Entities.Character
 
         private void OnDestroy()
         {
-            UIPanelController.OnUltimateSkill -= _ultimateSkill.UseSkill;
+            GamePanelView.OnUltimateSkill -= _ultimateSkill.UseSkill;
+            GamePanelView.OnShoot -= _shootingCharacter.GetProjectile;
         }
+
+        
     }
 }

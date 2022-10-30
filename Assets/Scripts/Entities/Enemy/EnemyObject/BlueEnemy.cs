@@ -6,11 +6,11 @@ namespace Entities.Enemy.EnemyObject
 {
     public class BlueEnemy : BaseEnemy
     {
-        [SerializeField] private ProjectileControl _projectile;
+        [SerializeField] private Projectile _projectile;
         [SerializeField] private Transform _projectileStartPosition;
         [SerializeField] private int _countProjectile;
-        private List<ProjectileControlEnemy> _projectileControls;
-        private ObjectPool<ProjectileControl> _objectPool;
+        private List<ProjectileEnemy> _projectileControls;
+        private ObjectPool<Projectile> _objectPool;
         private IEnumerator _shootCoroutine;
         private const float ShootDelay = 3;
         private bool _shoot;
@@ -18,8 +18,8 @@ namespace Entities.Enemy.EnemyObject
         protected void Start()
         {
             _objectPool =
-                new ObjectPool<ProjectileControl>(_projectile, _countProjectile, transform);
-            _projectileControls = new List<ProjectileControlEnemy>();
+                new ObjectPool<Projectile>(_projectile, _countProjectile, transform);
+            _projectileControls = new List<ProjectileEnemy>();
             _shootCoroutine = Shoot();
         }
 
@@ -57,7 +57,7 @@ namespace Entities.Enemy.EnemyObject
             {
                 yield return delay;
                 var projectile = _objectPool.GetFreeElement();
-                var projectileControlEnemy = projectile.GetComponent<ProjectileControlEnemy>();
+                var projectileControlEnemy = projectile.GetComponent<ProjectileEnemy>();
                 _projectileControls.Add(projectileControlEnemy);
                 projectile.AttackValue = Attack;
                 projectile.transform.localPosition = _projectileStartPosition.localPosition;
