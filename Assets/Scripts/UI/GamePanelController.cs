@@ -1,4 +1,3 @@
-using UI.Panels;
 using UI.Panels.Death;
 using UI.Panels.GamePlay;
 using UI.Panels.Pause;
@@ -33,46 +32,67 @@ namespace UI
 
         private void Start()
         {
-            _gamePlayModel = new GamePlayModel();
+            _gamePlayModel = new GamePlayModel(_characterController.CharacterStatsControl.Health,
+                _characterController.CharacterStatsControl.Power);
             _deathModel = new DeathModel(_characterController.CharacterStatsControl.KillCount);
             _pauseModel = new PauseModel();
 
-            _gamePlayController = new GamePlayController();
+            _gamePlayController = new GamePlayController(_gamePanelView.GamePlayView, _gamePlayModel);
             _deathController = new DeathController(_gamePanelView.DeathView, _deathModel);
-            _pauseController = new PauseController();
+            _pauseController = new PauseController(_gamePanelView.PauseView, _pauseModel);
 
 
-            _currentController = GetAndInitializeController(CreationTab.GamePlay);
+            _gamePlayController.OnPauseGame += OnTabChanger;
+            _gamePlayController.OnShoot += _characterController.ShootingCharacter.GetProjectile;
+            _gamePlayController.OnUltimateSkill += _characterController.UltimateSkill.UseSkill;
+
+            _pauseController.OnPauseGame += OnTabChanger;
+
+            _characterController.UltimateSkill.OnUltimateSkillButton += _gamePlayController.UltimateSkillInteractable;
+            _characterController.CharacterStatsControl.OnDeath += OnTabChanger;
+            _characterController.CharacterStatsControl.OnChangeHealth += _gamePlayController.UpdateHealthPoint;
+            _characterController.CharacterStatsControl.OnChangePower += _gamePlayController.UpdatePowerPoint;
+
+
+            _currentController = GetAndInitializeController(GameTab.GamePlay);
         }
 
-        private void OnTabChanger(CreationTab creationTab)
+        private void OnDestroy()
         {
-            _currentController?.Hide();
-            _currentController = GetAndInitializeController(creationTab);
+            _gamePlayController.OnPauseGame -= OnTabChanger;
+            _gamePlayController.OnShoot -= _characterController.ShootingCharacter.GetProjectile;
+            _gamePlayController.OnUltimateSkill -= _characterController.UltimateSkill.UseSkill;
+
+            _pauseController.OnPauseGame -= OnTabChanger;
+
+            _characterController.UltimateSkill.OnUltimateSkillButton -= _gamePlayController.UltimateSkillInteractable;
+            _characterController.CharacterStatsControl.OnDeath -= OnTabChanger;
+            _characterController.CharacterStatsControl.OnChangeHealth -= _gamePlayController.UpdateHealthPoint;
+            _characterController.CharacterStatsControl.OnChangePower -= _gamePlayController.UpdatePowerPoint;
         }
 
-        private IViewController GetAndInitializeController(CreationTab creationTab)
+        private void OnTabChanger(GameTab gameTab)
         {
-            switch (creationTab)
+            _currentController?.Dispose();
+            _currentController = GetAndInitializeController(gameTab);
+        }
+
+        private IViewController GetAndInitializeController(GameTab gameTab)
+        {
+            switch (gameTab)
             {
-                case CreationTab.GamePlay:
+                case GameTab.GamePlay:
                     _gamePlayController.Initialize(_gamePlayModel);
                     return _gamePlayController;
-                case CreationTab.Death:
+                case GameTab.Death:
                     _deathController.Initialize(_deathModel);
                     return _deathController;
-                case CreationTab.Pause:
+                case GameTab.Pause:
                     _pauseController.Initialize(_pauseModel);
                     return _pauseController;
                 default:
                     return null;
             }
         }
-    }
-
-    internal interface IViewController
-    {
-        void Initialize(params object[] args);
-        void Hide();
     }
 }

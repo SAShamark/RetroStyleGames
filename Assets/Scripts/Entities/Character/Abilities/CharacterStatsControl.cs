@@ -1,37 +1,40 @@
 using System;
 using Entities.Character.Data;
+using Entities.Enemy;
+using UI;
+using Zenject;
 
 namespace Entities.Character.Abilities
 {
     public class CharacterStatsControl
     {
-        public event Action<bool> OnUltaButton;
-        public event Action OnDeath;
+        public event Action OnChangeHealth;
+        public event Action OnChangePower;
+        public event Action<GameTab> OnDeath;
         public int KillCount { get; private set; }
-        public float Health => _health;
-        public float Power => _power;
-        public float MaxHealth => _maxHealth;
-
-        private float _health;
-        private float _power;
+        public float Health { get; private set; }
+        public float Power { get; private set; }
+        private float MaxHealth { get; }
 
         private const float MaxPower = 100;
         private const float MinPower = 0;
-        private readonly float _maxHealth;
         private const float MinHealth = 0;
+
+        private CharacterController _characterController;
+
+        [Inject]
+        private void Construct(EnemyFactory enemyFactory, CharacterController characterController)
+        {
+            _characterController = characterController;
+        }
 
         public CharacterStatsControl(CharacterData characterData)
         {
-            _health = characterData.Health;
-            _maxHealth = _health;
-            _power = characterData.Power;
+            Health = characterData.Health;
+            MaxHealth = Health;
+            Power = characterData.Power;
         }
 
-        private void UpdatePower(bool isActive)
-        {
-            OnUltaButton?.Invoke(isActive);
-        }
-        
         public void IncreaseKillCount()
         {
             KillCount++;
@@ -39,48 +42,61 @@ namespace Entities.Character.Abilities
 
         public void IncreasePower(float powerValue)
         {
-            _power += powerValue;
-            if (_power >= MaxPower)
+            Power += powerValue;
+            if (Power >= MaxPower)
             {
-                _power = MaxPower;
-                UpdatePower(true);
+                Power = MaxPower;
+                _characterController.UltimateSkill.UltimatePerformance(true);
             }
-        }
 
-        public void IncreaseHealth(float healthValue)
-        {
-            _health += healthValue;
-            if (_health >= _maxHealth)
-            {
-                _health = _maxHealth;
-            }
+            OnChangePower?.Invoke();
         }
 
         public void DecreasePower(float powerValue)
         {
-            _power -= powerValue;
-            UpdatePower(false);
-            if (_power < MinPower)
+            Power -= powerValue;
+            _characterController.UltimateSkill.UltimatePerformance(false);
+            if (Power < MinPower)
             {
-                _power = MinPower;
+                Power = MinPower;
             }
+
+            OnChangePower?.Invoke();
+        }
+
+        public void ResetPower()
+        {
+            Power = MinPower;
+        }
+
+        public void IncreaseHealth(float healthValue)
+        {
+            Health += healthValue;
+            if (Health >= MaxHealth)
+            {
+                Health = MaxHealth;
+            }
+
+            OnChangeHealth?.Invoke();
         }
 
         public void DecreaseHealth(float healthValue)
         {
-            _health -= healthValue;
-            if (_health < MinHealth)
+            Health -= healthValue;
+            if (Health < MinHealth)
             {
-                _health = MinHealth;
+                Health = MinHealth;
                 Death();
             }
+
+            OnChangeHealth?.Invoke();
         }
 
         private void Death()
         {
-            OnDeath?.Invoke();
+            OnDeath?.Invoke(GameTab.Death);
         }
-        
+
         public bool IsReboundProjectile()
         {
             return MaxHealth - Health > 10;

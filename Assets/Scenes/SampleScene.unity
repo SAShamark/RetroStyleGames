@@ -1732,6 +1732,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a173d878276726b429394acfdfa91000, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rootCanvas: {fileID: 682400106}
   _restartButton: {fileID: 1699663895}
   _continueButton: {fileID: 1041998150}
 --- !u!223 &682400106
@@ -3329,7 +3330,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34994017e2f0c0e4ab42502ab2fe648d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rootCanvas: {fileID: 0}
+  _rootCanvas: {fileID: 1257618942}
   _restartButton: {fileID: 682840821}
   _killCountText: {fileID: 331322137}
 --- !u!1 &1288043447

@@ -1,9 +1,10 @@
+using UI.View;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace UI.Panels.Pause
 {
-    public class PauseView : MonoBehaviour
+    public class PauseView : BaseView
     {
         [SerializeField] private Button _restartButton;
         [SerializeField] private Button _continueButton;

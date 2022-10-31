@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Entities.Enemy;
 using Zenject;
@@ -6,6 +7,8 @@ namespace Entities.Character.Abilities
 {
     public class UltimateSkill
     {
+        public event Action<bool> OnUltimateSkillButton;
+
         private EnemyFactory _enemyFactory;
         private CharacterController _characterController;
 
@@ -16,10 +19,15 @@ namespace Entities.Character.Abilities
             _characterController = characterController;
         }
 
+        public void UltimatePerformance(bool isActive)
+        {
+            OnUltimateSkillButton?.Invoke(isActive);
+        }
+        
         public void UseSkill()
         {
             KillAll();
-            ResetPower();
+            _characterController.CharacterStatsControl.ResetPower();
         }
 
         private void KillAll()
@@ -35,10 +43,6 @@ namespace Entities.Character.Abilities
                     _characterController.CharacterStatsControl.IncreaseKillCount();
                 }
             }
-        }
-        private void ResetPower()
-        {
-            _characterController.CharacterStatsControl.DecreasePower(_characterController.CharacterStatsControl.Power);
         }
     }
 }

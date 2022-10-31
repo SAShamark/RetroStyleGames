@@ -1,6 +1,6 @@
-namespace UI.Panels
+namespace UI
 {
-    public enum CreationTab
+    public enum GameTab
     {
         None = 0,
         GamePlay = 1,
