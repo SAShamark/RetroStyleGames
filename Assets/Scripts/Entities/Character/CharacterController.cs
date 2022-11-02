@@ -1,7 +1,8 @@
 using Entities.Character.Abilities;
 using Entities.Character.Data;
-using UI;
+using Entities.Enemy;
 using UnityEngine;
+using Zenject;
 
 
 namespace Entities.Character
@@ -20,12 +21,22 @@ namespace Entities.Character
         private CharacterMovement _characterMovement;
         private CharacterCameraMovement _characterCameraMovement;
 
+        private CharacterController _characterController;
+        private EnemySpawner _enemySpawner;
+
+        [Inject]
+        private void Construct(EnemySpawner enemySpawner, CharacterController characterController)
+        {
+            _enemySpawner = enemySpawner;
+            _characterController = characterController;
+        }
+
         private void Start()
         {
-            CharacterStatsControl = new CharacterStatsControl(_characterData);
+            CharacterStatsControl = new CharacterStatsControl(_characterData, this);
             _characterMovement = new CharacterMovement(_moveSpeed, transform);
             _characterCameraMovement = new CharacterCameraMovement(_characterCameraData, transform);
-            UltimateSkill = new UltimateSkill();
+            UltimateSkill = new UltimateSkill(_enemySpawner, this);
             ShootingCharacter = new ShootingCharacter(_characterShootData, CharacterStatsControl);
         }
 
@@ -34,6 +45,5 @@ namespace Entities.Character
             _characterMovement.MoveCharacter();
             _characterCameraMovement.CameraMovement();
         }
-        
     }
 }

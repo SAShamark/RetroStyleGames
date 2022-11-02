@@ -9,13 +9,12 @@ namespace Entities.Character.Abilities
     {
         public event Action<bool> OnUltimateSkillButton;
 
-        private EnemyFactory _enemyFactory;
-        private CharacterController _characterController;
+        private readonly EnemySpawner _enemySpawner;
+        private readonly CharacterController _characterController;
 
-        [Inject]
-        private void Construct(EnemyFactory enemyFactory,CharacterController characterController)
+        public UltimateSkill(EnemySpawner enemySpawner, CharacterController characterController)
         {
-            _enemyFactory = enemyFactory;
+            _enemySpawner = enemySpawner;
             _characterController = characterController;
         }
 
@@ -23,7 +22,7 @@ namespace Entities.Character.Abilities
         {
             OnUltimateSkillButton?.Invoke(isActive);
         }
-        
+
         public void UseSkill()
         {
             KillAll();
@@ -32,7 +31,7 @@ namespace Entities.Character.Abilities
 
         private void KillAll()
         {
-           var enemiesContainer = _enemyFactory.EnemyRegistry.EnemiesContainer;
+            var enemiesContainer = _enemySpawner.EnemyRegistry.EnemiesContainer;
             if (enemiesContainer != null)
             {
                 var enemyCount = enemiesContainer.Count;

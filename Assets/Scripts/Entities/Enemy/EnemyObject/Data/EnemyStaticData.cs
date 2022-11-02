@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Entities.Enemy.EnemyObject
+namespace Entities.Enemy.EnemyObject.Data
 {
     [CreateAssetMenu(fileName = "EnemyStaticData", menuName = "Unit/EnemyStaticData", order = 1)]
     public class EnemyStaticData : ScriptableObject

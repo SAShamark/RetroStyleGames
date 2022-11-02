@@ -1,4 +1,5 @@
 ﻿using System;
+using Entities.Enemy.EnemyObject.Data;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -14,9 +15,6 @@ namespace Entities.Enemy.EnemyObject
         public float Health { get; private set; }
         public float Attack { get; private set; }
         public float MinHealth{ get; private set; } = 0;
-
-        //public float MinHealth => this.MinHealth;
-
         public event Action<BaseEnemy> OnDeath;
 
         protected NavMeshAgent NavMeshAgent;
@@ -32,6 +30,8 @@ namespace Entities.Enemy.EnemyObject
             NavMeshAgent.speed = MoveSpeed;
         }
 
+        public abstract void ChangeTarget(Vector3 newTarget);
+
         public void DecreaseHealth(float value)
         {
             Health -= value;
@@ -41,8 +41,6 @@ namespace Entities.Enemy.EnemyObject
                 Death();
             }
         }
-
-        public abstract void ChangeTarget(Vector3 newTarget);
 
 
         private void Death()

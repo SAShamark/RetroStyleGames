@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using Entities.Enemy.EnemyObject;
+using Entities.Enemy.EnemyObject.Data;
 using UnityEngine;
 using Zenject;
 using CharacterController = Entities.Character.CharacterController;
 
 namespace Entities.Enemy
 {
-    public class EnemyFactory : MonoBehaviour
+    public class EnemySpawner : MonoBehaviour
     {
         public EnemyRegistry EnemyRegistry { get; private set; }
 

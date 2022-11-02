@@ -6,7 +6,7 @@ namespace UI.Panels.Pause
 {
     public class PauseController : IViewController
     {
-        public event Action<GameTab> OnPauseGame;
+        public event Action<GameTab> OnContinueGame;
 
         private readonly PauseView _pauseView;
         private readonly PauseModel _pauseModel;
@@ -21,7 +21,7 @@ namespace UI.Panels.Pause
         {
             _pauseView.RestartButton.onClick.AddListener(RestartButtonClicked);
             _pauseView.ContinueButton.onClick.AddListener(ContinueButtonClicked);
-            TurnOnPanel();
+            StoppingTime();
             _pauseView.Show();
         }
 
@@ -29,7 +29,6 @@ namespace UI.Panels.Pause
         {
             _pauseView.RestartButton.onClick.RemoveListener(RestartButtonClicked);
             _pauseView.ContinueButton.onClick.RemoveListener(ContinueButtonClicked);
-            OnPauseGame?.Invoke(GameTab.GamePlay);
             _pauseView.Hide();
         }
 
@@ -41,13 +40,12 @@ namespace UI.Panels.Pause
 
         private void ContinueButtonClicked()
         {
-            _pauseView.gameObject.SetActive(false);
             Time.timeScale = 1;
+            OnContinueGame?.Invoke(GameTab.GamePlay);
         }
 
-        public void TurnOnPanel()
+        private void StoppingTime()
         {
-            _pauseView.gameObject.SetActive(true);
             Time.timeScale = 0;
         }
     }

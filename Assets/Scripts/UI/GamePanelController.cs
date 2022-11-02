@@ -32,8 +32,7 @@ namespace UI
 
         private void Start()
         {
-            _gamePlayModel = new GamePlayModel(_characterController.CharacterStatsControl.Health,
-                _characterController.CharacterStatsControl.Power);
+            _gamePlayModel = new GamePlayModel();
             _deathModel = new DeathModel(_characterController.CharacterStatsControl.KillCount);
             _pauseModel = new PauseModel();
 
@@ -46,12 +45,14 @@ namespace UI
             _gamePlayController.OnShoot += _characterController.ShootingCharacter.GetProjectile;
             _gamePlayController.OnUltimateSkill += _characterController.UltimateSkill.UseSkill;
 
-            _pauseController.OnPauseGame += OnTabChanger;
+            _pauseController.OnContinueGame += OnTabChanger;
 
             _characterController.UltimateSkill.OnUltimateSkillButton += _gamePlayController.UltimateSkillInteractable;
             _characterController.CharacterStatsControl.OnDeath += OnTabChanger;
-            _characterController.CharacterStatsControl.OnChangeHealth += _gamePlayController.UpdateHealthPoint;
-            _characterController.CharacterStatsControl.OnChangePower += _gamePlayController.UpdatePowerPoint;
+            //_characterController.CharacterStatsControl.OnChangeHealth += UpdateGamePlayModelHealth;
+           // _characterController.CharacterStatsControl.OnChangeHealth += _gamePlayController.UpdateHealthPoint;
+           // _characterController.CharacterStatsControl.OnChangePower += UpdateGamePlayModelPower;
+            //_characterController.CharacterStatsControl.OnChangePower += _gamePlayController.UpdatePowerPoint;
 
 
             _currentController = GetAndInitializeController(GameTab.GamePlay);
@@ -63,12 +64,15 @@ namespace UI
             _gamePlayController.OnShoot -= _characterController.ShootingCharacter.GetProjectile;
             _gamePlayController.OnUltimateSkill -= _characterController.UltimateSkill.UseSkill;
 
-            _pauseController.OnPauseGame -= OnTabChanger;
+            _pauseController.OnContinueGame -= OnTabChanger;
 
             _characterController.UltimateSkill.OnUltimateSkillButton -= _gamePlayController.UltimateSkillInteractable;
             _characterController.CharacterStatsControl.OnDeath -= OnTabChanger;
-            _characterController.CharacterStatsControl.OnChangeHealth -= _gamePlayController.UpdateHealthPoint;
-            _characterController.CharacterStatsControl.OnChangePower -= _gamePlayController.UpdatePowerPoint;
+            //_characterController.CharacterStatsControl.OnChangeHealth -= UpdateGamePlayModelHealth;
+           // _characterController.CharacterStatsControl.OnChangeHealth -= _gamePlayController.UpdateHealthPoint;
+            //_characterController.CharacterStatsControl.OnChangePower -= UpdateGamePlayModelPower;
+           // _characterController.CharacterStatsControl.OnChangePower -= _gamePlayController.UpdatePowerPoint;
+
         }
 
         private void OnTabChanger(GameTab gameTab)
@@ -94,5 +98,15 @@ namespace UI
                     return null;
             }
         }
+
+        /*private void UpdateGamePlayModelHealth()
+        {
+            _gamePlayModel.UpdateHealth(_characterController.CharacterStatsControl.Health);
+        }
+
+        private void UpdateGamePlayModelPower()
+        {
+            _gamePlayModel.UpdatePower(_characterController.CharacterStatsControl.Power);
+        }*/
     }
 }

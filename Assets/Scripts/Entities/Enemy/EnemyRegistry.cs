@@ -6,7 +6,7 @@ namespace Entities.Enemy
 {
     public class EnemyRegistry
     {
-        public List<BaseEnemy> EnemiesContainer { get; private set; }
+        public List<BaseEnemy> EnemiesContainer { get; }
 
         public EnemyRegistry()
         {

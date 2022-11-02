@@ -23,6 +23,8 @@ namespace UI.Panels.GamePlay
             _gamePlayView.PauseButton.onClick.AddListener(PauseGameButtonClicked);
             _gamePlayView.ShootButton.onClick.AddListener(ShootButtonClicked);
             _gamePlayView.UltimateButton.onClick.AddListener(UltimateSkillButtonClicked);
+            /*UpdateHealthPoint();
+            UpdatePowerPoint();*/
             _gamePlayView.Show();
         }
 
@@ -32,18 +34,17 @@ namespace UI.Panels.GamePlay
             _gamePlayView.ShootButton.onClick.RemoveListener(ShootButtonClicked);
             _gamePlayView.UltimateButton.onClick.RemoveListener(UltimateSkillButtonClicked);
             _gamePlayView.Hide();
-
         }
 
-        public void UpdateHealthPoint()
+        /*public void UpdateHealthPoint()
         {
-            _gamePlayView.HealthText.text = Mathf.Round(_gamePlayModel.HealthPoint).ToString();
+            _gamePlayView.HealthText.text = $"{Mathf.Round(_gamePlayModel.Health).ToString()} :Health";
         }
 
         public void UpdatePowerPoint()
         {
-            _gamePlayView.PowerText.text = Mathf.Round(_gamePlayModel.PowerPoint).ToString();
-        }
+            _gamePlayView.PowerText.text = $"{Mathf.Round(_gamePlayModel.Power).ToString()} :Power";
+        }*/
 
         private void PauseGameButtonClicked()
         {

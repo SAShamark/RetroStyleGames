@@ -9,18 +9,17 @@ namespace Entities.Enemy.EnemyObject
         [SerializeField] private Projectile _projectile;
         [SerializeField] private Transform _projectileStartPosition;
         [SerializeField] private int _countProjectile;
+        [SerializeField] private float _cooldown = 3;
+
         private List<ProjectileEnemy> _projectileControls;
         private ObjectPool<Projectile> _objectPool;
-        private IEnumerator _shootCoroutine;
-        private const float ShootDelay = 3;
         private bool _shoot;
+        private bool _isReloaded;
 
         protected void Start()
         {
-            _objectPool =
-                new ObjectPool<Projectile>(_projectile, _countProjectile, transform);
+            _objectPool = new ObjectPool<Projectile>(_projectile, _countProjectile, transform);
             _projectileControls = new List<ProjectileEnemy>();
-            _shootCoroutine = Shoot();
         }
 
         public override void ChangeTarget(Vector3 newTarget)
@@ -33,35 +32,43 @@ namespace Entities.Enemy.EnemyObject
 
         private void Update()
         {
-            if (Vector3.Distance(Target.position, transform.position) <= NavMeshAgent.stoppingDistance && !_shoot)
-            {
-                _shoot = true;
-                StartCoroutine(_shootCoroutine);
-            }
-            else if (!_shoot)
+            if (CanMove())
             {
                 MoveToTarget();
             }
-            else if (Vector3.Distance(Target.position, transform.position) > NavMeshAgent.stoppingDistance)
+            else if (_isReloaded)
             {
-                StopCoroutine(_shootCoroutine);
-                _shoot = false;
+                Shoot();
+            }
+
+            bool CanMove()
+            {
+                return Vector3.Distance(Target.position, transform.position) > NavMeshAgent.stoppingDistance;
             }
         }
 
-        private IEnumerator Shoot()
+        private void Shoot()
         {
-            var delay = new WaitForSeconds(ShootDelay);
+            var projectile = _objectPool.GetFreeElement();
+            var projectileControlEnemy = projectile.GetComponent<ProjectileEnemy>();
+            _projectileControls.Add(projectileControlEnemy);
+
+            projectile.AttackValue = Attack;
+            projectile.transform.localPosition = _projectileStartPosition.localPosition;
+            projectileControlEnemy.Target = Target;
+
+            _isReloaded = false;
+            StartCoroutine(Reload());
+        }
+
+        private IEnumerator Reload()
+        {
+            var delay = new WaitForSeconds(_cooldown);
 
             while (true)
             {
                 yield return delay;
-                var projectile = _objectPool.GetFreeElement();
-                var projectileControlEnemy = projectile.GetComponent<ProjectileEnemy>();
-                _projectileControls.Add(projectileControlEnemy);
-                projectile.AttackValue = Attack;
-                projectile.transform.localPosition = _projectileStartPosition.localPosition;
-                projectileControlEnemy.Target = Target;
+                _isReloaded = true;
             }
         }
     }

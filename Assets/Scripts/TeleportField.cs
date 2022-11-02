@@ -6,12 +6,12 @@ using Zenject;
 public class TeleportField : MonoBehaviour
 {
     private const int CharacterLayer = 8;
-    private EnemyFactory _enemyFactory;
+    private EnemySpawner _enemySpawner;
 
     [Inject]
-    private void Construct(EnemyFactory enemyFactory)
+    private void Construct(EnemySpawner enemySpawner)
     {
-        _enemyFactory = enemyFactory;
+        _enemySpawner = enemySpawner;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -25,9 +25,9 @@ public class TeleportField : MonoBehaviour
 
     private void InformingEnemyAboutCharacterPosition(Collider other)
     {
-        if (_enemyFactory.EnemyRegistry.EnemiesContainer != null)
+        if (_enemySpawner.EnemyRegistry.EnemiesContainer != null)
         {
-            foreach (var enemy in _enemyFactory.EnemyRegistry.EnemiesContainer)
+            foreach (var enemy in _enemySpawner.EnemyRegistry.EnemiesContainer)
             {
                 enemy.ChangeTarget(other.transform.position);
             }

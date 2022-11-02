@@ -2,13 +2,23 @@ namespace UI.Panels.GamePlay
 {
     public class GamePlayModel
     {
-        public float HealthPoint { get; }
-        public float PowerPoint { get; }
+        /*public float Health { get; private set; }
+        public float Power { get; private set; }
 
-        public GamePlayModel(float healthPoint, float powerPoint)
+        public GamePlayModel(float health, float power)
         {
-            HealthPoint = healthPoint;
-            PowerPoint = powerPoint;
+            UpdateHealth(health);
+            UpdatePower(power);
         }
+
+        public void UpdateHealth(float health)
+        {
+            Health = health;
+        }
+
+        public void UpdatePower(float power)
+        {
+            Power = power;
+        }*/
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using Entities.Character;
 using UnityEngine;
 
 namespace Entities.Enemy

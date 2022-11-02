@@ -2,7 +2,6 @@
 using System.Collections;
 using Entities.Enemy;
 using Entities.Enemy.EnemyObject;
-using ModestTree.Util;
 using UnityEngine;
 using Zenject;
 using Random = UnityEngine.Random;
@@ -16,7 +15,8 @@ namespace Entities.Character
             set => _isRebound = value;
         }
 
-        public event Action OnDisableProjectile; 
+        public event Action OnKilledEnemy; 
+        public event Action<ProjectileCharacter> OnDisableProjectile; 
         public int KillCount { get; private set; }
         public float EnergyValue { get; private set; }
 
@@ -24,12 +24,12 @@ namespace Entities.Character
         private const float PossibleReboundPercent = 0.1f;
         private bool _isRebound;
         private BaseEnemy _closestEnemy;
-        private EnemyFactory _enemyFactory;
+        private EnemySpawner _enemySpawner;
 
         [Inject]
-        private void Construct(EnemyFactory enemyFactory)
+        private void Construct(EnemySpawner enemySpawner)
         {
-            _enemyFactory = enemyFactory;
+            _enemySpawner = enemySpawner;
         }
 
         private void Start()
@@ -45,6 +45,7 @@ namespace Entities.Character
             {
                 var enemy = other.gameObject.GetComponentInParent<BaseEnemy>();
                 EnergyValue = GetEnergyPoint(enemy);
+                
                 HitEnemy(enemy);
             }
         }
@@ -57,6 +58,7 @@ namespace Entities.Character
             {
                 IncreaseKillCount();
                 NextProjectileAction();
+                OnKilledEnemy?.Invoke();
             }
             else
             {
@@ -78,7 +80,7 @@ namespace Entities.Character
             }
         }
 
-        public void IncreaseKillCount()
+        private void IncreaseKillCount()
         {
             KillCount++;
         }
@@ -114,7 +116,7 @@ namespace Entities.Character
             float distance = Mathf.Infinity;
             Vector3 projectilePosition = transform.position;
 
-            foreach (var enemy in _enemyFactory.EnemyRegistry.EnemiesContainer)
+            foreach (var enemy in _enemySpawner.EnemyRegistry.EnemiesContainer)
             {
                 Vector3 diff = enemy.transform.position - projectilePosition;
                 float curDistance = diff.sqrMagnitude;
@@ -141,15 +143,15 @@ namespace Entities.Character
         protected override IEnumerator TurnOffProjectile(float delay)
         {
             yield return new WaitForSeconds(delay);
-            OnDisableProjectile?.Invoke();
             gameObject.SetActive(false);
+            OnDisableProjectile?.Invoke(this);
         }
 
         private void TurnOffProjectile()
         {
             gameObject.SetActive(false);
-            OnDisableProjectile?.Invoke();
             StopCoroutine(TurnOffProjectileCoroutine);
+            OnDisableProjectile?.Invoke(this);
         }
 
         protected override void MoveProjectile()

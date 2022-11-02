@@ -1,5 +1,6 @@
 using Entities.Enemy;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Zenject;
 
 namespace Installers
@@ -8,7 +9,7 @@ namespace Installers
     {
         [SerializeField] private Transform _startCharacterPosition;
         [SerializeField] private Entities.Character.CharacterController _characterPrefab;
-        [SerializeField] private EnemyFactory _enemyFactory;
+        [FormerlySerializedAs("_enemyFactory")] [SerializeField] private EnemySpawner _enemySpawner;
 
         public override void InstallBindings()
         {
@@ -26,7 +27,7 @@ namespace Installers
 
         private void BindEnemyFactory()
         {
-            Container.Bind<EnemyFactory>().FromInstance(_enemyFactory).AsSingle();
+            Container.Bind<EnemySpawner>().FromInstance(_enemySpawner).AsSingle();
         }
     }
 }

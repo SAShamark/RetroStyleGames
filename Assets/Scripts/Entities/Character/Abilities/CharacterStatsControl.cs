@@ -1,6 +1,5 @@
 using System;
 using Entities.Character.Data;
-using Entities.Enemy;
 using UI;
 using Zenject;
 
@@ -19,20 +18,15 @@ namespace Entities.Character.Abilities
         private const float MaxPower = 100;
         private const float MinPower = 0;
         private const float MinHealth = 0;
+        private readonly CharacterController _characterController;
 
-        private CharacterController _characterController;
-
-        [Inject]
-        private void Construct(EnemyFactory enemyFactory, CharacterController characterController)
-        {
-            _characterController = characterController;
-        }
-
-        public CharacterStatsControl(CharacterData characterData)
+        public CharacterStatsControl(CharacterData characterData, CharacterController characterController)
         {
             Health = characterData.Health;
             MaxHealth = Health;
             Power = characterData.Power;
+
+            _characterController = characterController;
         }
 
         public void IncreaseKillCount()
