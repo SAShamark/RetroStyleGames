@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Entities.Enemy.EnemyObject;
+using System.Linq;
 using Entities.Enemy.EnemyObject.Data;
 using UnityEngine;
 using Zenject;
@@ -8,16 +8,9 @@ using CharacterController = Entities.Character.CharacterController;
 
 namespace Entities.Enemy
 {
-    public class EnemySpawner : MonoBehaviour
+    public class EnemySpawner
     {
-        public EnemyRegistry EnemyRegistry { get; private set; }
 
-        
-        [SerializeField] private List<EnemyData> _enemyDates;
-        [SerializeField] private EnemyData _defaultEnemy;
-        [SerializeField] private Transform _enemyContainer;
-        
-        private CharacterController _characterController;
         private const float StartTimeForSpawn = 5f;
         private float _timeForSpawn;
         private const float DecreasedSpawnTimeValue = 0.5f;
@@ -25,39 +18,48 @@ namespace Entities.Enemy
         private const float MinSpawnTime = 2;
         private EnemyType _enemyType;
 
-        [Inject]
-        private void Construct(CharacterController characterController)
+        private readonly CharacterController _characterController;
+        private readonly EnemyRegistry _enemyRegistry;
+        private readonly List<EnemyData> _enemyDates;
+        private readonly EnemyData _defaultEnemy;
+        private readonly Transform _enemyContainer;
+
+
+        public EnemySpawner(CharacterController characterController, EnemyRegistry enemyRegistry,
+            List<EnemyData> enemyDates, EnemyData enemyData, Transform enemyContainer)
         {
             _characterController = characterController;
+            _enemyRegistry = enemyRegistry;
+            _enemyDates = enemyDates;
+            _defaultEnemy = enemyData;
+            _enemyContainer = enemyContainer;
         }
-        public void Start()
+
+        public void Init()
         {
             _timeForSpawn = StartTimeForSpawn;
-            EnemyRegistry = new EnemyRegistry();
-            Spawn();
         }
 
-        private void Spawn()
-        {
-            StartCoroutine(Spawner());
-        }
-
-        private IEnumerator Spawner()
+        public IEnumerator Spawner()
         {
             var delay = new WaitForSeconds(_timeForSpawn);
             while (true)
             {
                 yield return delay;
-                if (_timeForSpawn >= MinSpawnTime)
-                {
-                    _timeForSpawn -= DecreasedSpawnTimeValue;
-                }
-                else
-                {
-                    _countForSpawnEnemy++;
-                }
-
+                SpawnerTime();
                 CreatEnemy();
+            }
+        }
+
+        private void SpawnerTime()
+        {
+            if (_timeForSpawn >= MinSpawnTime)
+            {
+                _timeForSpawn -= DecreasedSpawnTimeValue;
+            }
+            else
+            {
+                _countForSpawnEnemy++;
             }
         }
 
@@ -68,46 +70,31 @@ namespace Entities.Enemy
             for (int i = 0; i < _countForSpawnEnemy; i++)
             {
                 var positionForSpawn = PositionProcessor.GetNewPosition();
-                var enemyPrefab = GetEnemyForSpawn(_enemyType);
-                var enemy = Instantiate(enemyPrefab, positionForSpawn, Quaternion.identity, _enemyContainer);
-                enemy.Init(SearchNeededEnemyData(_enemyType),_characterController.transform);
-                EnemyRegistry.AddEnemy(enemy);
+                var enemyData = GetEnemyData(_enemyType);
+                var enemy = Object.Instantiate(enemyData.BaseEnemy, positionForSpawn, Quaternion.identity,
+                    _enemyContainer);
+
+                enemy.Init(enemyData.EnemyStaticData, _characterController.transform);
+                _enemyRegistry.AddEnemy(enemy);
             }
         }
 
-        
 
         //Blue:Red = 1:4
         private EnemyType GetEnemyType()
         {
-            var index = Random.Range(1, 6);
+            int index = Random.Range(1, 6);
             return index > 1 ? EnemyType.Red : EnemyType.Blue;
         }
 
-        private BaseEnemy GetEnemyForSpawn(EnemyType enemyType)
+        private EnemyData GetEnemyData(EnemyType enemyType)
         {
-            foreach (var enemyData in _enemyDates)
+            foreach (var enemyData in _enemyDates.Where(enemyData => enemyData.EnemyType == enemyType))
             {
-                if (enemyData.EnemyType == enemyType)
-                {
-                    return enemyData.BaseEnemy;
-                }
+                return enemyData;
             }
 
-            return _defaultEnemy.BaseEnemy;
-        }
-
-        private EnemyStaticData SearchNeededEnemyData(EnemyType enemyType)
-        {
-            foreach (var enemyData in _enemyDates)
-            {
-                if (enemyData.EnemyType == enemyType)
-                {
-                    return enemyData.EnemyStaticData;
-                }
-            }
-
-            return _defaultEnemy.EnemyStaticData;
+            return _defaultEnemy;
         }
     }
 }

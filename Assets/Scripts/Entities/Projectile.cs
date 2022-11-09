@@ -23,10 +23,7 @@ namespace Entities
 
             if (triggerEnterCountLayer != 0)
             {
-                if (TurnOffProjectileCoroutine != null)
-                {
-                    StopCoroutine(TurnOffProjectileCoroutine);
-                }
+                TurnOffProjectile();
             }
         }
 
@@ -37,6 +34,16 @@ namespace Entities
             {
                 StopCoroutine(TurnOffProjectileCoroutine);
             }
+        }
+
+        protected virtual void TurnOffProjectile()
+        {
+            gameObject.SetActive(false);
+            if (TurnOffProjectileCoroutine != null)
+            {
+                StopCoroutine(TurnOffProjectileCoroutine);
+            }
+
         }
 
         protected abstract IEnumerator TurnOffProjectile(float delay);

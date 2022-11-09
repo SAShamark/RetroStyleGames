@@ -28,7 +28,7 @@ namespace Entities.Enemy.EnemyObject
             {
                 var characterView = other.gameObject.GetComponent<CharacterController>();
                 characterView.CharacterStatsControl.DecreaseHealth(Attack);
-                Destroy(gameObject);
+                DecreaseHealth(Health);
             }
         }
 

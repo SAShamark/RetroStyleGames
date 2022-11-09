@@ -9,7 +9,9 @@ namespace Entities.Character.Abilities
     {
         public event Action OnChangeHealth;
         public event Action OnChangePower;
-        public event Action<GameTab> OnDeath;
+        public event Action OnChangeKillCount;
+        public event Action<bool> OnMaxPower;
+        public event Action<GameTab> OnChangeTab;
         public int KillCount { get; private set; }
         public float Health { get; private set; }
         public float Power { get; private set; }
@@ -18,20 +20,19 @@ namespace Entities.Character.Abilities
         private const float MaxPower = 100;
         private const float MinPower = 0;
         private const float MinHealth = 0;
-        private readonly CharacterController _characterController;
 
-        public CharacterStatsControl(CharacterData characterData, CharacterController characterController)
+        public CharacterStatsControl(CharacterData characterData)
         {
             Health = characterData.Health;
             MaxHealth = Health;
             Power = characterData.Power;
 
-            _characterController = characterController;
         }
 
         public void IncreaseKillCount()
         {
             KillCount++;
+            OnChangeKillCount?.Invoke();
         }
 
         public void IncreasePower(float powerValue)
@@ -40,7 +41,7 @@ namespace Entities.Character.Abilities
             if (Power >= MaxPower)
             {
                 Power = MaxPower;
-                _characterController.UltimateSkill.UltimatePerformance(true);
+                OnMaxPower?.Invoke(true);
             }
 
             OnChangePower?.Invoke();
@@ -49,18 +50,20 @@ namespace Entities.Character.Abilities
         public void DecreasePower(float powerValue)
         {
             Power -= powerValue;
-            _characterController.UltimateSkill.UltimatePerformance(false);
             if (Power < MinPower)
             {
                 Power = MinPower;
             }
-
+            OnMaxPower?.Invoke(false);
             OnChangePower?.Invoke();
+
         }
 
         public void ResetPower()
         {
             Power = MinPower;
+            OnMaxPower?.Invoke(false);
+            OnChangePower?.Invoke();
         }
 
         public void IncreaseHealth(float healthValue)
@@ -88,7 +91,8 @@ namespace Entities.Character.Abilities
 
         private void Death()
         {
-            OnDeath?.Invoke(GameTab.Death);
+            OnChangeTab?.Invoke(GameTab.Death);
+            OnChangeKillCount?.Invoke();
         }
 
         public bool IsReboundProjectile()

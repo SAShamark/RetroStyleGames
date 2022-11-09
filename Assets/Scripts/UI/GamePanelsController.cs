@@ -1,15 +1,13 @@
 using UI.Panels.Death;
 using UI.Panels.GamePlay;
 using UI.Panels.Pause;
-using UnityEngine;
-using Zenject;
 using CharacterController = Entities.Character.CharacterController;
 
 namespace UI
 {
-    public class GamePanelController : MonoBehaviour
+    public class GamePanelsController
     {
-        [SerializeField] private GamePanelView _gamePanelView;
+        private readonly GamePanelView _gamePanelView;
 
         private GamePlayController _gamePlayController;
         private GamePlayModel _gamePlayModel;
@@ -22,17 +20,19 @@ namespace UI
 
         private IViewController _currentController;
 
-        private CharacterController _characterController;
+        private readonly CharacterController _characterController;
 
-        [Inject]
-        private void Construct(CharacterController characterController)
+
+        public GamePanelsController(GamePanelView gamePanelView, CharacterController characterController)
         {
+            _gamePanelView = gamePanelView;
             _characterController = characterController;
         }
 
-        private void Start()
+        public void Init()
         {
-            _gamePlayModel = new GamePlayModel();
+            _gamePlayModel = new GamePlayModel(_characterController.CharacterStatsControl.Health,
+                _characterController.CharacterStatsControl.Power, _characterController.CharacterStatsControl.KillCount);
             _deathModel = new DeathModel(_characterController.CharacterStatsControl.KillCount);
             _pauseModel = new PauseModel();
 
@@ -48,17 +48,20 @@ namespace UI
             _pauseController.OnContinueGame += OnTabChanger;
 
             _characterController.UltimateSkill.OnUltimateSkillButton += _gamePlayController.UltimateSkillInteractable;
-            _characterController.CharacterStatsControl.OnDeath += OnTabChanger;
-            //_characterController.CharacterStatsControl.OnChangeHealth += UpdateGamePlayModelHealth;
-           // _characterController.CharacterStatsControl.OnChangeHealth += _gamePlayController.UpdateHealthPoint;
-           // _characterController.CharacterStatsControl.OnChangePower += UpdateGamePlayModelPower;
-            //_characterController.CharacterStatsControl.OnChangePower += _gamePlayController.UpdatePowerPoint;
-
+            _characterController.CharacterStatsControl.OnChangeTab += OnTabChanger;
+            _characterController.CharacterStatsControl.OnChangeHealth += UpdateGamePlayModelHealth;
+            _characterController.CharacterStatsControl.OnChangeHealth += _gamePlayController.UpdateHealthPoint;
+            _characterController.CharacterStatsControl.OnChangePower += UpdateGamePlayModelPower;
+            _characterController.CharacterStatsControl.OnChangePower += _gamePlayController.UpdatePowerPoint;
+            _characterController.CharacterStatsControl.OnChangeKillCount += UpdateGamePlayModelKillCount;
+            _characterController.CharacterStatsControl.OnChangeKillCount += _gamePlayController.UpdateKillCount;
+            _characterController.CharacterStatsControl.OnChangeKillCount += GetDeathModelKillCount;
+            _characterController.CharacterStatsControl.OnChangeKillCount += _deathController.ChangeKillCount;
 
             _currentController = GetAndInitializeController(GameTab.GamePlay);
         }
 
-        private void OnDestroy()
+        public void OnDestroy()
         {
             _gamePlayController.OnPauseGame -= OnTabChanger;
             _gamePlayController.OnShoot -= _characterController.ShootingCharacter.GetProjectile;
@@ -67,12 +70,15 @@ namespace UI
             _pauseController.OnContinueGame -= OnTabChanger;
 
             _characterController.UltimateSkill.OnUltimateSkillButton -= _gamePlayController.UltimateSkillInteractable;
-            _characterController.CharacterStatsControl.OnDeath -= OnTabChanger;
-            //_characterController.CharacterStatsControl.OnChangeHealth -= UpdateGamePlayModelHealth;
-           // _characterController.CharacterStatsControl.OnChangeHealth -= _gamePlayController.UpdateHealthPoint;
-            //_characterController.CharacterStatsControl.OnChangePower -= UpdateGamePlayModelPower;
-           // _characterController.CharacterStatsControl.OnChangePower -= _gamePlayController.UpdatePowerPoint;
-
+            _characterController.CharacterStatsControl.OnChangeTab -= OnTabChanger;
+            _characterController.CharacterStatsControl.OnChangeHealth -= UpdateGamePlayModelHealth;
+            _characterController.CharacterStatsControl.OnChangeHealth -= _gamePlayController.UpdateHealthPoint;
+            _characterController.CharacterStatsControl.OnChangePower -= UpdateGamePlayModelPower;
+            _characterController.CharacterStatsControl.OnChangePower -= _gamePlayController.UpdatePowerPoint;
+            _characterController.CharacterStatsControl.OnChangeKillCount -= UpdateGamePlayModelKillCount;
+            _characterController.CharacterStatsControl.OnChangeKillCount -= _gamePlayController.UpdateKillCount;
+            _characterController.CharacterStatsControl.OnChangeKillCount -= GetDeathModelKillCount;
+            _characterController.CharacterStatsControl.OnChangeKillCount -= _deathController.ChangeKillCount;
         }
 
         private void OnTabChanger(GameTab gameTab)
@@ -99,7 +105,7 @@ namespace UI
             }
         }
 
-        /*private void UpdateGamePlayModelHealth()
+        private void UpdateGamePlayModelHealth()
         {
             _gamePlayModel.UpdateHealth(_characterController.CharacterStatsControl.Health);
         }
@@ -107,6 +113,16 @@ namespace UI
         private void UpdateGamePlayModelPower()
         {
             _gamePlayModel.UpdatePower(_characterController.CharacterStatsControl.Power);
-        }*/
+        }
+
+        private void UpdateGamePlayModelKillCount()
+        {
+            _gamePlayModel.UpdateKillCount(_characterController.CharacterStatsControl.KillCount);
+        }
+
+        private void GetDeathModelKillCount()
+        {
+            _deathModel.GetKillCount(_characterController.CharacterStatsControl.KillCount);
+        }
     }
 }

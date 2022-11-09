@@ -14,13 +14,16 @@ namespace Entities.Enemy.EnemyObject
         public float MoveSpeed { get; private set; }
         public float Health { get; private set; }
         public float Attack { get; private set; }
-        public float MinHealth{ get; private set; } = 0;
+        public float MinHealth => 0;
         public event Action<BaseEnemy> OnDeath;
 
         protected NavMeshAgent NavMeshAgent;
-        public void Init(EnemyStaticData enemyStaticData, Transform transformTarget)
+
+        
+
+        public void Init(EnemyStaticData enemyStaticData, Transform targetTransform)
         {
-            Target = transformTarget;
+            Target = targetTransform;
             EnemyType = enemyStaticData.Type;
             MoveSpeed = enemyStaticData.MoveSpeed;
             Health = enemyStaticData.Health;

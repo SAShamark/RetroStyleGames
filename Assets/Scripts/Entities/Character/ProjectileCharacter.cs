@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections;
-using Entities.Enemy;
 using Entities.Enemy.EnemyObject;
 using UnityEngine;
-using Zenject;
 using Random = UnityEngine.Random;
 
 namespace Entities.Character
@@ -15,22 +13,17 @@ namespace Entities.Character
             set => _isRebound = value;
         }
 
-        public event Action OnKilledEnemy; 
-        public event Action<ProjectileCharacter> OnDisableProjectile; 
+        public event Action OnKilledEnemy;
+        public event Action<ProjectileCharacter> OnDisableProjectile;
+        public event Action<ProjectileCharacter> OnClosestEnemy;
         public int KillCount { get; private set; }
         public float EnergyValue { get; private set; }
+        public BaseEnemy ClosestEnemy { get; set; }
 
         private const int EnemyLayer = 9;
         private const float PossibleReboundPercent = 0.1f;
         private bool _isRebound;
-        private BaseEnemy _closestEnemy;
-        private EnemySpawner _enemySpawner;
 
-        [Inject]
-        private void Construct(EnemySpawner enemySpawner)
-        {
-            _enemySpawner = enemySpawner;
-        }
 
         private void Start()
         {
@@ -45,7 +38,7 @@ namespace Entities.Character
             {
                 var enemy = other.gameObject.GetComponentInParent<BaseEnemy>();
                 EnergyValue = GetEnergyPoint(enemy);
-                
+
                 HitEnemy(enemy);
             }
         }
@@ -68,67 +61,38 @@ namespace Entities.Character
 
         private void NextProjectileAction()
         {
-            if (KillCount == 1)
+            switch (KillCount)
             {
-                TryGetNextEnemy();
-            }
-            else if (KillCount > 1)
-            {
-                ResetKillCount();
-                TurnOffProjectile();
-                StopCoroutine(TurnOffProjectileCoroutine);
+                case 1:
+                    TryGetNextEnemy();
+                    break;
+                case > 1:
+                    ResetKillCount();
+                    TurnOffProjectile();
+                    StopCoroutine(TurnOffProjectileCoroutine);
+                    break;
             }
         }
+
+        private void TryGetNextEnemy()
+        {
+            int reboundChance = Random.Range(0, 1);
+            if (reboundChance >= PossibleReboundPercent || _isRebound)
+            {
+                OnClosestEnemy?.Invoke(this);
+            }
+        }
+
 
         private void IncreaseKillCount()
         {
             KillCount++;
         }
-
-        public void DecreaseKillCount()
-        {
-            if (KillCount > 0)
-            {
-                KillCount--;
-            }
-            else
-            {
-                Debug.LogError("The number of murders cannot be less than zero");
-            }
-        }
-
         public void ResetKillCount()
         {
             KillCount = 0;
         }
 
-        private void TryGetNextEnemy()
-        {
-            var reboundChance = Random.Range(0, 1);
-            if (reboundChance >= PossibleReboundPercent || _isRebound)
-            {
-                _closestEnemy = FindClosestEnemy();
-            }
-        }
-
-        private BaseEnemy FindClosestEnemy()
-        {
-            float distance = Mathf.Infinity;
-            Vector3 projectilePosition = transform.position;
-
-            foreach (var enemy in _enemySpawner.EnemyRegistry.EnemiesContainer)
-            {
-                Vector3 diff = enemy.transform.position - projectilePosition;
-                float curDistance = diff.sqrMagnitude;
-                if (curDistance < distance)
-                {
-                    _closestEnemy = enemy;
-                    distance = curDistance;
-                }
-            }
-
-            return _closestEnemy;
-        }
 
         private float GetEnergyPoint(BaseEnemy enemy)
         {
@@ -147,16 +111,15 @@ namespace Entities.Character
             OnDisableProjectile?.Invoke(this);
         }
 
-        private void TurnOffProjectile()
+        protected override void TurnOffProjectile()
         {
-            gameObject.SetActive(false);
-            StopCoroutine(TurnOffProjectileCoroutine);
+            base.TurnOffProjectile();
             OnDisableProjectile?.Invoke(this);
         }
 
         protected override void MoveProjectile()
         {
-            if (_closestEnemy == null)
+            if (ClosestEnemy == null)
             {
                 MoveProjectileForward();
             }
@@ -174,7 +137,7 @@ namespace Entities.Character
         private void MoveProjectileToClosestEnemy()
         {
             var position = transform.position;
-            var closestEnemyPosition = _closestEnemy.transform.position;
+            var closestEnemyPosition = ClosestEnemy.transform.position;
 
             position = Vector3.MoveTowards(position, closestEnemyPosition, _moveSpeed);
             position += (closestEnemyPosition - position).normalized * (_moveSpeed * Time.deltaTime);

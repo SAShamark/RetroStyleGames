@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -19,6 +18,7 @@ namespace UI.Panels.Death
         {
             _deathView.RestartButton.onClick.AddListener(RestartButtonClicked);
             ChangeKillCount();
+            StoppingTime();
             _deathView.Show();
         }
 
@@ -34,9 +34,13 @@ namespace UI.Panels.Death
             Time.timeScale = 1;
         }
 
-        private void ChangeKillCount()
+        public void ChangeKillCount()
         {
-            _deathView.KillCountText.text = _deathModel.KillCount.ToString();
+            _deathView.KillCountText.text = $"{_deathModel.KillCount.ToString()} :KillCount";
+        }
+        private void StoppingTime()
+        {
+            Time.timeScale = 0;
         }
     }
 }

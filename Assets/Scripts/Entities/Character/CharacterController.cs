@@ -1,8 +1,6 @@
 using Entities.Character.Abilities;
 using Entities.Character.Data;
-using Entities.Enemy;
 using UnityEngine;
-using Zenject;
 
 
 namespace Entities.Character
@@ -20,30 +18,31 @@ namespace Entities.Character
 
         private CharacterMovement _characterMovement;
         private CharacterCameraMovement _characterCameraMovement;
-
-        private CharacterController _characterController;
-        private EnemySpawner _enemySpawner;
-
-        [Inject]
-        private void Construct(EnemySpawner enemySpawner, CharacterController characterController)
-        {
-            _enemySpawner = enemySpawner;
-            _characterController = characterController;
-        }
+        private ApplicationStart _applicationStart;
 
         private void Start()
         {
-            CharacterStatsControl = new CharacterStatsControl(_characterData, this);
+            _applicationStart = ApplicationStart.Instance;
+
+            CharacterStatsControl = new CharacterStatsControl(_characterData);
             _characterMovement = new CharacterMovement(_moveSpeed, transform);
             _characterCameraMovement = new CharacterCameraMovement(_characterCameraData, transform);
-            UltimateSkill = new UltimateSkill(_enemySpawner, this);
-            ShootingCharacter = new ShootingCharacter(_characterShootData, CharacterStatsControl);
+            UltimateSkill = new UltimateSkill(_applicationStart,CharacterStatsControl);
+            ShootingCharacter = new ShootingCharacter(_applicationStart, _characterShootData, CharacterStatsControl);
+
+            CharacterStatsControl.OnMaxPower += UltimateSkill.UltimatePerformance;
         }
+
 
         private void FixedUpdate()
         {
             _characterMovement.MoveCharacter();
             _characterCameraMovement.CameraMovement();
+        }
+
+        private void OnDestroy()
+        {
+            CharacterStatsControl.OnMaxPower -= UltimateSkill.UltimatePerformance;
         }
     }
 }

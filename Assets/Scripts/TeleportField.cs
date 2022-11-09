@@ -1,17 +1,14 @@
 using Entities;
-using Entities.Enemy;
 using UnityEngine;
-using Zenject;
 
 public class TeleportField : MonoBehaviour
 {
     private const int CharacterLayer = 8;
-    private EnemySpawner _enemySpawner;
+    private ApplicationStart _applicationStart;
 
-    [Inject]
-    private void Construct(EnemySpawner enemySpawner)
+    private void Start()
     {
-        _enemySpawner = enemySpawner;
+        _applicationStart=ApplicationStart.Instance;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -25,9 +22,9 @@ public class TeleportField : MonoBehaviour
 
     private void InformingEnemyAboutCharacterPosition(Collider other)
     {
-        if (_enemySpawner.EnemyRegistry.EnemiesContainer != null)
+        if (_applicationStart.EnemyRegistry.EnemiesContainer != null)
         {
-            foreach (var enemy in _enemySpawner.EnemyRegistry.EnemiesContainer)
+            foreach (var enemy in _applicationStart.EnemyRegistry.EnemiesContainer)
             {
                 enemy.ChangeTarget(other.transform.position);
             }

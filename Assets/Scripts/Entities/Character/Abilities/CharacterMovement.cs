@@ -8,7 +8,7 @@ namespace Entities.Character.Abilities
         private readonly Transform _characterTransform;
         private readonly float _moveSpeed;
 
-        public CharacterMovement(float moveSpeed,Transform characterTransform)
+        public CharacterMovement(float moveSpeed, Transform characterTransform)
         {
             _moveSpeed = moveSpeed;
             _characterTransform = characterTransform;

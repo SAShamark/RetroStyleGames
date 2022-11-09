@@ -23,8 +23,9 @@ namespace UI.Panels.GamePlay
             _gamePlayView.PauseButton.onClick.AddListener(PauseGameButtonClicked);
             _gamePlayView.ShootButton.onClick.AddListener(ShootButtonClicked);
             _gamePlayView.UltimateButton.onClick.AddListener(UltimateSkillButtonClicked);
-            /*UpdateHealthPoint();
-            UpdatePowerPoint();*/
+            UpdateHealthPoint();
+            UpdatePowerPoint();
+            UpdateKillCount();
             _gamePlayView.Show();
         }
 
@@ -36,7 +37,7 @@ namespace UI.Panels.GamePlay
             _gamePlayView.Hide();
         }
 
-        /*public void UpdateHealthPoint()
+        public void UpdateHealthPoint()
         {
             _gamePlayView.HealthText.text = $"{Mathf.Round(_gamePlayModel.Health).ToString()} :Health";
         }
@@ -44,7 +45,11 @@ namespace UI.Panels.GamePlay
         public void UpdatePowerPoint()
         {
             _gamePlayView.PowerText.text = $"{Mathf.Round(_gamePlayModel.Power).ToString()} :Power";
-        }*/
+        }
+        public void UpdateKillCount()
+        {
+            _gamePlayView.KillCount.text = $"{_gamePlayModel.KillCount.ToString()} :KillCount";
+        }
 
         private void PauseGameButtonClicked()
         {
