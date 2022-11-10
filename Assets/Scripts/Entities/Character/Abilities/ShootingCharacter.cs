@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Entities.Character.Data;
 using Entities.Enemy.EnemyObject;
 using UnityEngine;
@@ -8,27 +6,25 @@ namespace Entities.Character.Abilities
 {
     public class ShootingCharacter
     {
-        private readonly ObjectPool<Projectile> _objectPool;
+        private readonly ObjectPool<ProjectileCharacter> _objectPool;
         private readonly CharacterShootData _characterShootData;
         private readonly CharacterStatsControl _characterStatsControl;
-        private readonly List<ProjectileCharacter> _projectileCharacters;
         private readonly ApplicationStart _applicationStart;
-        public ShootingCharacter(ApplicationStart applicationStart, CharacterShootData characterShootData,CharacterStatsControl characterStatsControl)
+
+        public ShootingCharacter(ApplicationStart applicationStart, CharacterShootData characterShootData,
+            CharacterStatsControl characterStatsControl)
         {
             _applicationStart = applicationStart;
             _characterShootData = characterShootData;
             _characterStatsControl = characterStatsControl;
-            _objectPool = new ObjectPool<Projectile>(_characterShootData.ProjectilePrefab,
+            _objectPool = new ObjectPool<ProjectileCharacter>(_characterShootData.ProjectilePrefab,
                 _characterShootData.CountProjectile);
-            _projectileCharacters = new List<ProjectileCharacter>();
         }
 
         public void GetProjectile()
         {
             var projectile = _objectPool.GetFreeElement();
-
             var projectileCharacter = projectile.GetComponent<ProjectileCharacter>();
-            _projectileCharacters.Add(projectileCharacter);
             SetProjectileData(projectileCharacter);
         }
 
@@ -70,19 +66,18 @@ namespace Entities.Character.Abilities
 
             projectileCharacter.ClosestEnemy = closestEnemy;
         }
+
         private void UpdateStats()
         {
-            foreach (var projectileCharacter in _projectileCharacters)
+            foreach (var projectileCharacter in _objectPool.Pool)
             {
                 bool addPower = projectileCharacter.KillCount == 1;
                 bool addPowerAndHealth = projectileCharacter.KillCount == 2;
-
                 if (addPower)
                 {
                     _characterStatsControl.IncreaseKillCount();
                     _characterStatsControl.IncreasePower(projectileCharacter.EnergyValue);
                     projectileCharacter.ResetEnergyValue();
-
                 }
                 else if (addPowerAndHealth)
                 {
@@ -90,7 +85,6 @@ namespace Entities.Character.Abilities
                     _characterStatsControl.IncreasePower(projectileCharacter.EnergyValue);
                     _characterStatsControl.IncreaseHealth(_characterStatsControl.Health / 2);
                     projectileCharacter.ResetEnergyValue();
-
                 }
             }
         }

@@ -1,23 +1,25 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 using CharacterController = Entities.Character.CharacterController;
 
 namespace Entities.Enemy.EnemyObject
 {
+    [RequireComponent(typeof(NavMeshAgent))]
     public class RedEnemy : BaseEnemy
     {
-        [SerializeField] private Transform _model;
         [SerializeField] private float _timeToFly = 2;
-        
+
         private const float YUpPosition = 1;
         private const float FallibilityY = 0.1f;
         private const int CharacterLayer = 8;
         private bool _isMove;
-
         private IEnumerator _beforeMoveCoroutine;
+        private NavMeshAgent _navMeshAgent;
 
         private void Start()
         {
+            _navMeshAgent = GetComponent<NavMeshAgent>();
             _beforeMoveCoroutine = BeforeMove();
             StartCoroutine(_beforeMoveCoroutine);
         }
@@ -47,22 +49,22 @@ namespace Entities.Enemy.EnemyObject
 
         private IEnumerator BeforeMove()
         {
-            while (_model.position.y <= YUpPosition - FallibilityY)
+            while (transform.position.y <= YUpPosition - FallibilityY)
             {
                 ComeUp();
                 yield return new WaitForEndOfFrame();
             }
 
             yield return new WaitForSeconds(_timeToFly);
-            
-            while (_model.localPosition.y >= FallibilityY)
+
+            while (transform.position.y >= FallibilityY)
             {
                 ComeDown();
                 yield return new WaitForEndOfFrame();
             }
 
-            _model.localPosition = new Vector3(0, 0, 0);
-
+            transform.position = new Vector3(transform.position.x, 0, transform.position.z);
+            _navMeshAgent.enabled = true;
             _isMove = true;
         }
 
@@ -72,16 +74,17 @@ namespace Entities.Enemy.EnemyObject
 
         private void ComeUp()
         {
-            var position = _model.position;
+            var position = transform.position;
             position = Vector3.Lerp(position, new Vector3(position.x, YUpPosition, position.z),
                 MoveSpeed * Time.deltaTime);
-            _model.position = position;
+            transform.position = position;
         }
 
         private void ComeDown()
         {
-            _model.localPosition =
-                Vector3.Lerp(_model.localPosition, new Vector3(0, 0, 0), MoveSpeed * Time.deltaTime);
+            transform.position =
+                Vector3.Lerp(transform.position, new Vector3(transform.position.x, 0, transform.position.z),
+                    MoveSpeed * Time.deltaTime);
         }
 
         protected override void MoveToTarget()

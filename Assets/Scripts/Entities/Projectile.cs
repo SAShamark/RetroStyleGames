@@ -6,44 +6,62 @@ namespace Entities
     public abstract class Projectile : MonoBehaviour
     {
         public float AttackValue { get; set; }
+        public int KillCount { get; private set; }
+
         [SerializeField] private LayerMask _layerMask;
         [SerializeField] protected float _moveSpeed = 3f;
         [SerializeField] protected float _lifeTime = 5;
-        protected IEnumerator TurnOffProjectileCoroutine;
+        protected IEnumerator TurnOffProjectileDelay;
+        protected IEnumerator TurnOffProjectileNow;
 
+        protected virtual void Start()
+        {
+            TurnOffProjectileDelay = TurnOffProjectile(_lifeTime);
+            TurnOffProjectileNow = TurnOffProjectile(0);
+            StartCoroutine(TurnOffProjectileDelay);
+        }
 
-        private void Update()
+        protected virtual void Update()
         {
             MoveProjectile();
         }
 
         protected virtual void OnTriggerEnter(Collider other)
         {
-            var triggerEnterCountLayer = ((1 << other.gameObject.layer) & _layerMask);
+            int triggerEnterCountLayer = ((1 << other.gameObject.layer) & _layerMask);
 
             if (triggerEnterCountLayer != 0)
             {
-                TurnOffProjectile();
+                Debug.Log("enter");
+                StartCoroutine(TurnOffProjectileNow);
+            }
+        }
+
+        protected virtual void OnEnable()
+        {
+            if (TurnOffProjectileDelay != null)
+            {
+                StartCoroutine(TurnOffProjectileDelay);
             }
         }
 
 
         protected virtual void OnDisable()
         {
-            if (TurnOffProjectileCoroutine != null)
+            if (TurnOffProjectileDelay != null)
             {
-                StopCoroutine(TurnOffProjectileCoroutine);
+                StopCoroutine(TurnOffProjectileDelay);
             }
         }
 
-        protected virtual void TurnOffProjectile()
+        protected void IncreaseKillCount()
         {
-            gameObject.SetActive(false);
-            if (TurnOffProjectileCoroutine != null)
-            {
-                StopCoroutine(TurnOffProjectileCoroutine);
-            }
+            KillCount++;
+        }
 
+        public void ResetKillCount()
+        {
+            KillCount = 0;
         }
 
         protected abstract IEnumerator TurnOffProjectile(float delay);

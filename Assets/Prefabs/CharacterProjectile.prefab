@@ -130,5 +130,6 @@ MonoBehaviour:
   _layerMask:
     serializedVersion: 2
     m_Bits: 192
-  _moveSpeed: 3
+  _moveSpeed: 5
   _lifeTime: 5
+  _kill: 0

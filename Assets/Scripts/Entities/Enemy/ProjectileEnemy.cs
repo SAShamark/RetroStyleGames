@@ -11,12 +11,10 @@ namespace Entities.Enemy
         private const int PlayerLayer = 8;
         private Transform _startParent;
 
-        private void Start()
+        protected override void Start()
         {
-            
+            base.Start();
             _startParent = transform.parent;
-            TurnOffProjectileCoroutine = TurnOffProjectile(_lifeTime);
-            StartCoroutine(TurnOffProjectileCoroutine);
             transform.parent = null;
         }
 
@@ -25,9 +23,10 @@ namespace Entities.Enemy
             base.OnTriggerEnter(other);
             if (other.gameObject.layer == PlayerLayer)
             {
+                
                 var playerController = other.gameObject.GetComponentInChildren<Character.CharacterController>();
                 playerController.CharacterStatsControl.DecreasePower(AttackValue);
-                TurnOffProjectile();
+                StartCoroutine(TurnOffProjectileNow);
             }
         }
 
@@ -43,7 +42,6 @@ namespace Entities.Enemy
             transform.parent = _startParent;
             gameObject.SetActive(false);
         }
-
         public void ChangeTargetPosition(Vector3 lastPosition)
         {
             _loseTarget = true;
@@ -57,7 +55,7 @@ namespace Entities.Enemy
             {
                 if (Vector3.Distance(transform.position, _lastTargetPosition) <= 0.2f)
                 {
-                    TurnOffProjectile();
+                    StartCoroutine(TurnOffProjectileNow);
                     return;
                 }
 
@@ -65,13 +63,6 @@ namespace Entities.Enemy
             }
 
             transform.position += (newPosition - transform.position).normalized * (_moveSpeed * Time.deltaTime);
-        }
-
-        private void TurnOffProjectile()
-        {
-            gameObject.SetActive(false);
-            transform.parent = _startParent;
-            StopCoroutine(TurnOffProjectileCoroutine);
         }
     }
 }
