@@ -24,8 +24,7 @@ namespace Entities.Character.Abilities
         public void GetProjectile()
         {
             var projectile = _objectPool.GetFreeElement();
-            var projectileCharacter = projectile.GetComponent<ProjectileCharacter>();
-            SetProjectileData(projectileCharacter);
+            SetProjectileData(projectile);
         }
 
         private void SetProjectileData(ProjectileCharacter projectileCharacter)

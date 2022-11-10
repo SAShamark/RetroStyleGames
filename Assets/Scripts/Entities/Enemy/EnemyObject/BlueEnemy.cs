@@ -1,33 +1,25 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Entities.Enemy.EnemyObject
 {
     public class BlueEnemy : BaseEnemy
     {
-        [SerializeField] private Projectile _projectile;
+        [SerializeField] private ProjectileEnemy _projectile;
         [SerializeField] private Transform _projectileStartPosition;
         [SerializeField] private int _countProjectile;
         [SerializeField] private float _cooldown = 3;
 
-        private List<ProjectileEnemy> _projectileControls;
-        private ObjectPool<Projectile> _objectPool;
+        private ObjectPool<ProjectileEnemy> _objectPool;
         private bool _shoot;
         private bool _isReloaded;
+        private IEnumerator _reloadCoroutine;
 
         protected void Start()
         {
-            _objectPool = new ObjectPool<Projectile>(_projectile, _countProjectile, transform);
-            _projectileControls = new List<ProjectileEnemy>();
-        }
-
-        public override void ChangeTarget(Vector3 newTarget)
-        {
-            foreach (var projectileControl in _projectileControls)
-            {
-                projectileControl.ChangeTargetPosition(newTarget);
-            }
+            _objectPool = new ObjectPool<ProjectileEnemy>(_projectile, _countProjectile, transform);
+            _reloadCoroutine = Reload();
+            StartCoroutine(_reloadCoroutine);
         }
 
         private void Update()
@@ -47,18 +39,26 @@ namespace Entities.Enemy.EnemyObject
             }
         }
 
+        private void OnDestroy()
+        {
+            StopCoroutine(_reloadCoroutine);
+
+            foreach (var projectile in _objectPool.Pool)
+            {
+                print(1);
+                Destroy(projectile.gameObject);
+            }
+
+            _objectPool.Pool.Clear();
+        }
+
         private void Shoot()
         {
-            var projectile = _objectPool.GetFreeElement();
-            var projectileControlEnemy = projectile.GetComponent<ProjectileEnemy>();
-            _projectileControls.Add(projectileControlEnemy);
-
-            projectile.AttackValue = Attack;
-            projectile.transform.localPosition = _projectileStartPosition.localPosition;
-            projectileControlEnemy.Target = Target;
-
             _isReloaded = false;
-            StartCoroutine(Reload());
+            var projectile = _objectPool.GetFreeElement();
+            projectile.AttackValue = Attack;
+            projectile.transform.position = _projectileStartPosition.position;
+            projectile.Target = Target;
         }
 
         private IEnumerator Reload()
@@ -69,6 +69,14 @@ namespace Entities.Enemy.EnemyObject
             {
                 yield return delay;
                 _isReloaded = true;
+            }
+        }
+
+        public override void ChangeTarget(Vector3 newTarget)
+        {
+            foreach (var projectileControl in _objectPool.Pool)
+            {
+                projectileControl.ChangeTargetPosition(newTarget);
             }
         }
     }

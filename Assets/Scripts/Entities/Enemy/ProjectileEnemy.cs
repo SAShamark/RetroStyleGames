@@ -9,13 +9,11 @@ namespace Entities.Enemy
         private Vector3 _lastTargetPosition;
         private bool _loseTarget;
         private const int PlayerLayer = 8;
-        private Transform _startParent;
+        private IEnumerator _turnOffCoroutine;
 
-        protected override void Start()
+        private void Start()
         {
-            base.Start();
-            _startParent = transform.parent;
-            transform.parent = null;
+            transform.parent = transform.parent.parent;
         }
 
         protected override void OnTriggerEnter(Collider other)
@@ -23,12 +21,12 @@ namespace Entities.Enemy
             base.OnTriggerEnter(other);
             if (other.gameObject.layer == PlayerLayer)
             {
-                
                 var playerController = other.gameObject.GetComponentInChildren<Character.CharacterController>();
                 playerController.CharacterStatsControl.DecreasePower(AttackValue);
-                StartCoroutine(TurnOffProjectileNow);
+                TurnOffProjectile();
             }
         }
+
 
         protected override void OnDisable()
         {
@@ -39,9 +37,9 @@ namespace Entities.Enemy
         protected override IEnumerator TurnOffProjectile(float delay)
         {
             yield return new WaitForSeconds(delay);
-            transform.parent = _startParent;
             gameObject.SetActive(false);
         }
+
         public void ChangeTargetPosition(Vector3 lastPosition)
         {
             _loseTarget = true;
@@ -55,7 +53,7 @@ namespace Entities.Enemy
             {
                 if (Vector3.Distance(transform.position, _lastTargetPosition) <= 0.2f)
                 {
-                    StartCoroutine(TurnOffProjectileNow);
+                    TurnOffProjectile();
                     return;
                 }
 

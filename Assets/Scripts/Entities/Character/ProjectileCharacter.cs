@@ -23,17 +23,16 @@ namespace Entities.Character
         private const int EnemyLayer = 9;
         private const float PossibleReboundPercent = 0.1f;
         private bool _isRebound;
-
+        
         protected override void OnTriggerEnter(Collider other)
         {
+            base.OnTriggerEnter(other);
             if (other.gameObject.layer == EnemyLayer)
             {
                 var enemy = other.gameObject.GetComponentInParent<BaseEnemy>();
                 HitEnemy(enemy);
             }
-            base.OnTriggerEnter(other);
         }
-
         private void HitEnemy(BaseEnemy enemy)
         {
             enemy.DecreaseHealth(enemy.Health);
@@ -43,27 +42,25 @@ namespace Entities.Character
                 IncreaseKillCount();
                 EnergyValue += GetEnergyPoint(enemy);
                 OnKilledEnemy?.Invoke();
-                print("hi");
                 NextProjectileAction();
             }
             else
             {
-                StartCoroutine(TurnOffProjectileNow);
+                TurnOffProjectile();
             }
         }
 
         private void NextProjectileAction()
         {
-            /*switch (KillCount)
+            switch (KillCount)
             {
                 case 1:
                     TryGetNextEnemy();
                     break;
                 case > 1:
-                    StartCoroutine(TurnOffProjectileNow);
+                    TurnOffProjectile();
                     break;
-            }*/
-            StartCoroutine(TurnOffProjectileNow);
+            }
         }
 
         private void TryGetNextEnemy()
@@ -83,6 +80,13 @@ namespace Entities.Character
         public void ResetEnergyValue()
         {
             EnergyValue = 0;
+        }
+
+        protected override void TurnOffProjectile()
+        {
+            ResetEnergyValue();
+            OnDisableProjectile?.Invoke(this);
+            base.TurnOffProjectile();
         }
 
         protected override IEnumerator TurnOffProjectile(float delay)

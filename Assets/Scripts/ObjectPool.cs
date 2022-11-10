@@ -42,7 +42,7 @@ public class ObjectPool<T> where T : MonoBehaviour
     {
         foreach (var mono in Pool)
         {
-            if (!mono.gameObject.activeInHierarchy)
+            if (!mono.gameObject.activeSelf)
             {
                 element = mono;
                 mono.gameObject.SetActive(true);

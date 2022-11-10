@@ -11,15 +11,7 @@ namespace Entities
         [SerializeField] private LayerMask _layerMask;
         [SerializeField] protected float _moveSpeed = 3f;
         [SerializeField] protected float _lifeTime = 5;
-        protected IEnumerator TurnOffProjectileDelay;
-        protected IEnumerator TurnOffProjectileNow;
-
-        protected virtual void Start()
-        {
-            TurnOffProjectileDelay = TurnOffProjectile(_lifeTime);
-            TurnOffProjectileNow = TurnOffProjectile(0);
-            StartCoroutine(TurnOffProjectileDelay);
-        }
+        private IEnumerator _turnOffCoroutine;
 
         protected virtual void Update()
         {
@@ -32,25 +24,21 @@ namespace Entities
 
             if (triggerEnterCountLayer != 0)
             {
-                Debug.Log("enter");
-                StartCoroutine(TurnOffProjectileNow);
+                StartCoroutine(_turnOffCoroutine);
             }
         }
 
         protected virtual void OnEnable()
         {
-            if (TurnOffProjectileDelay != null)
-            {
-                StartCoroutine(TurnOffProjectileDelay);
-            }
+            _turnOffCoroutine = TurnOffProjectile(_lifeTime);
+            StartCoroutine(_turnOffCoroutine);
         }
-
 
         protected virtual void OnDisable()
         {
-            if (TurnOffProjectileDelay != null)
+            if (_turnOffCoroutine != null)
             {
-                StopCoroutine(TurnOffProjectileDelay);
+                StopCoroutine(_turnOffCoroutine);
             }
         }
 
@@ -64,6 +52,11 @@ namespace Entities
             KillCount = 0;
         }
 
+        protected virtual void TurnOffProjectile()
+        {
+            ResetKillCount();
+            gameObject.SetActive(false);
+        }
         protected abstract IEnumerator TurnOffProjectile(float delay);
         protected abstract void MoveProjectile();
     }

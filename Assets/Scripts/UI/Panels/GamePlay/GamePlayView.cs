@@ -14,11 +14,11 @@ namespace UI.Panels.GamePlay
         [SerializeField] private TMP_Text _healthText;
         [SerializeField] private TMP_Text _powerText;
         [SerializeField] private TMP_Text _killCount;
-    
-        public Button ShootButton=>_shootButton;
-        public Button UltimateButton=>_ultimateButton;
-        public Button PauseButton=>_pauseButton;
-        
+
+        public Button ShootButton => _shootButton;
+        public Button UltimateButton => _ultimateButton;
+        public Button PauseButton => _pauseButton;
+
         public TMP_Text HealthText => _healthText;
         public TMP_Text PowerText => _powerText;
         public TMP_Text KillCount => _killCount;

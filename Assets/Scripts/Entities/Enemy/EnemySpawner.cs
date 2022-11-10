@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Entities.Enemy.EnemyObject.Data;
 using UnityEngine;
-using Zenject;
 using CharacterController = Entities.Character.CharacterController;
 
 namespace Entities.Enemy
 {
     public class EnemySpawner
     {
-
         private const float StartTimeForSpawn = 5f;
         private float _timeForSpawn;
         private const float DecreasedSpawnTimeValue = 0.5f;
@@ -23,7 +21,6 @@ namespace Entities.Enemy
         private readonly List<EnemyData> _enemyDates;
         private readonly EnemyData _defaultEnemy;
         private readonly Transform _enemyContainer;
-
 
         public EnemySpawner(CharacterController characterController, EnemyRegistry enemyRegistry,
             List<EnemyData> enemyDates, EnemyData enemyData, Transform enemyContainer)
@@ -83,8 +80,9 @@ namespace Entities.Enemy
         //Blue:Red = 1:4
         private EnemyType GetEnemyType()
         {
-            int index = Random.Range(1, 6);
-            return index > 1 ? EnemyType.Red : EnemyType.Blue;
+            //int index = Random.Range(1, 6);
+            //return index > 1 ? EnemyType.Red : EnemyType.Blue;
+            return EnemyType.Blue;
         }
 
         private EnemyData GetEnemyData(EnemyType enemyType)
