@@ -8,11 +8,11 @@ using CharacterController = Entities.Character.CharacterController;
 
 public class ApplicationStart : MonoBehaviour
 {
+    public static ApplicationStart Instance;
     public EnemyRegistry EnemyRegistry { get; private set; }
 
-    public static ApplicationStart Instance;
-    [SerializeField] private GamePanelView _gamePanelView;
 
+    [SerializeField] private GamePanelView _gamePanelView;
     [SerializeField] private List<EnemyData> _enemyDates;
     [SerializeField] private EnemyData _defaultEnemy;
     [SerializeField] private Transform _enemyContainer;
@@ -22,13 +22,14 @@ public class ApplicationStart : MonoBehaviour
     private EnemySpawner _enemySpawner;
 
     private CharacterController _characterController;
-    
+
 
     [Inject]
     private void Construct(CharacterController characterController)
     {
         _characterController = characterController;
     }
+
     private void Awake()
     {
         if (Instance == null)
@@ -40,6 +41,7 @@ public class ApplicationStart : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
     private void Start()
     {
         _gamePanelsController = new GamePanelsController(_gamePanelView, _characterController);

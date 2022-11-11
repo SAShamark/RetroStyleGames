@@ -2,7 +2,8 @@
 {
     public enum EnemyType
     {
-        Blue = 0,
-        Red = 1,
+        None = 0,
+        Blue = 1,
+        Red = 2,
     }
 }

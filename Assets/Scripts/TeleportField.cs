@@ -8,7 +8,7 @@ public class TeleportField : MonoBehaviour
 
     private void Start()
     {
-        _applicationStart=ApplicationStart.Instance;
+        _applicationStart = ApplicationStart.Instance;
     }
 
     private void OnTriggerEnter(Collider other)

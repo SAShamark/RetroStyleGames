@@ -12,20 +12,15 @@ namespace Entities
 
         public static Vector3 GetNewPosition()
         {
-            Vector3 position = Random.insideUnitSphere * SphereRadius;
+            var position = Random.insideUnitSphere * SphereRadius;
             position.y = YSpawnPosition;
 
-            Vector3 raycastPosition = position;
+            var raycastPosition = position;
             raycastPosition.y += YRayCastPosition;
 
-            Ray ray = new Ray(raycastPosition, position - raycastPosition);
+            var ray = new Ray(raycastPosition, position - raycastPosition);
 
-            if (Physics.Raycast(ray, MaxRayDistance, 1 << LayerWallIndex))
-            {
-                return GetNewPosition();
-            }
-
-            return position;
+            return Physics.Raycast(ray, MaxRayDistance, 1 << LayerWallIndex) ? GetNewPosition() : position;
         }
     }
 }

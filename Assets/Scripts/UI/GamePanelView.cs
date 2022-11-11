@@ -13,7 +13,5 @@ namespace UI
         public GamePlayView GamePlayView => _gamePlayView;
         public DeathView DeathView => _deathView;
         public PauseView PauseView => _pauseView;
-
-        private Entities.Character.CharacterController _characterController;
     }
 }

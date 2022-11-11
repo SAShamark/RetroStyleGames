@@ -80,9 +80,8 @@ namespace Entities.Enemy
         //Blue:Red = 1:4
         private EnemyType GetEnemyType()
         {
-            //int index = Random.Range(1, 6);
-            //return index > 1 ? EnemyType.Red : EnemyType.Blue;
-            return EnemyType.Blue;
+            int index = Random.Range(1, 6);
+            return index > 1 ? EnemyType.Red : EnemyType.Blue;
         }
 
         private EnemyData GetEnemyData(EnemyType enemyType)

@@ -33,7 +33,6 @@ namespace Entities.Character
             CharacterStatsControl.OnMaxPower += UltimateSkill.UltimatePerformance;
         }
 
-
         private void FixedUpdate()
         {
             _characterMovement.MoveCharacter();

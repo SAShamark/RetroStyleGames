@@ -5,7 +5,7 @@ using CharacterController = Entities.Character.CharacterController;
 
 namespace Entities.Enemy.EnemyObject
 {
-    [RequireComponent(typeof(NavMeshAgent))]
+    
     public class RedEnemy : BaseEnemy
     {
         [SerializeField] private float _timeToFly = 2;

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-
 
 
 public class ObjectPool<T> where T : MonoBehaviour
@@ -16,11 +16,13 @@ public class ObjectPool<T> where T : MonoBehaviour
 
         CreatPool(count);
     }
+
     public ObjectPool(T prefab, int count)
     {
         Prefab = prefab;
         CreatPool(count);
     }
+
     private void CreatPool(int count)
     {
         Pool = new List<T>();
@@ -40,14 +42,11 @@ public class ObjectPool<T> where T : MonoBehaviour
 
     private bool HasFreeElement(out T element)
     {
-        foreach (var mono in Pool)
+        foreach (var mono in Pool.Where(mono => !mono.gameObject.activeSelf))
         {
-            if (!mono.gameObject.activeSelf)
-            {
-                element = mono;
-                mono.gameObject.SetActive(true);
-                return true;
-            }
+            element = mono;
+            mono.gameObject.SetActive(true);
+            return true;
         }
 
         element = null;

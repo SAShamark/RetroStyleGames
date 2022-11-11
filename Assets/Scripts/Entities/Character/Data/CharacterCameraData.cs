@@ -7,7 +7,6 @@ namespace Entities.Character.Data
     public class CharacterCameraData
     {
         [SerializeField] private Transform _cameraTransform;
-
         [SerializeField] [Range(25f, 150f)] private float _mouseSensX = 75f;
         [SerializeField] [Range(25f, 150f)] private float _mouseSensY = 75f;
         [SerializeField] private float _minClampVertical = -60;

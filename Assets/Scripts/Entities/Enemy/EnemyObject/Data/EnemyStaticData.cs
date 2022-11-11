@@ -15,7 +15,6 @@ namespace Entities.Enemy.EnemyObject.Data
         public float Attack => _attack;
         public float Health => _health;
         public float MoveSpeed => _moveSpeed;
-
         public float EnergyPoint => _energyPoint;
     }
 }

@@ -4519,19 +4519,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _gamePanelView: {fileID: 408262365}
   _enemyDates:
-  - EnemyType: 0
-    BaseEnemy: {fileID: 3679377308921962561, guid: e844df8eec262764db3dffd31aa367a6,
+  - _enemyType: 1
+    _baseEnemy: {fileID: 3679377308921962561, guid: e844df8eec262764db3dffd31aa367a6,
       type: 3}
-    EnemyStaticData: {fileID: 11400000, guid: 264197d69fbdf144592d971b066d04dd, type: 2}
-  - EnemyType: 1
-    BaseEnemy: {fileID: 853839891476187872, guid: 129e6c33b54fb2c4b807ae08d72c8753,
+    _enemyStaticData: {fileID: 0}
+  - _enemyType: 2
+    _baseEnemy: {fileID: 853839891476187872, guid: 129e6c33b54fb2c4b807ae08d72c8753,
       type: 3}
-    EnemyStaticData: {fileID: 11400000, guid: 4faa9e2699dbd8b49aab7df0f82d1cde, type: 2}
+    _enemyStaticData: {fileID: 0}
   _defaultEnemy:
-    EnemyType: 1
-    BaseEnemy: {fileID: 853839891476187872, guid: 129e6c33b54fb2c4b807ae08d72c8753,
-      type: 3}
-    EnemyStaticData: {fileID: 11400000, guid: 4faa9e2699dbd8b49aab7df0f82d1cde, type: 2}
+    _enemyType: 0
+    _baseEnemy: {fileID: 0}
+    _enemyStaticData: {fileID: 0}
   _enemyContainer: {fileID: 1661605403}
 --- !u!1 &1800623779
 GameObject:

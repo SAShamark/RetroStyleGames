@@ -52,15 +52,6 @@ namespace Entities.Enemy.EnemyObject
             _objectPool.Pool.Clear();
         }
 
-        private void Shoot()
-        {
-            _isReloaded = false;
-            var projectile = _objectPool.GetFreeElement();
-            projectile.AttackValue = Attack;
-            projectile.transform.position = _projectileStartPosition.position;
-            projectile.Target = Target;
-        }
-
         private IEnumerator Reload()
         {
             var delay = new WaitForSeconds(_cooldown);
@@ -70,6 +61,15 @@ namespace Entities.Enemy.EnemyObject
                 yield return delay;
                 _isReloaded = true;
             }
+        }
+
+        private void Shoot()
+        {
+            _isReloaded = false;
+            var projectile = _objectPool.GetFreeElement();
+            projectile.AttackValue = Attack;
+            projectile.transform.position = _projectileStartPosition.position;
+            projectile.Target = Target;
         }
 
         public override void ChangeTarget(Vector3 newTarget)

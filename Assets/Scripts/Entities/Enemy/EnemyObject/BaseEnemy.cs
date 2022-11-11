@@ -8,7 +8,7 @@ namespace Entities.Enemy.EnemyObject
     [RequireComponent(typeof(NavMeshAgent))]
     public abstract class BaseEnemy : MonoBehaviour
     {
-        public Transform Target { get; private set; }
+        protected Transform Target { get; private set; }
         public EnemyType EnemyType { get; private set; }
         public float EnergyPoint { get; private set; }
         public float MoveSpeed { get; private set; }
@@ -19,7 +19,6 @@ namespace Entities.Enemy.EnemyObject
 
         protected NavMeshAgent NavMeshAgent;
 
-        
 
         public void Init(EnemyStaticData enemyStaticData, Transform targetTransform)
         {
@@ -44,7 +43,6 @@ namespace Entities.Enemy.EnemyObject
                 Death();
             }
         }
-
 
         private void Death()
         {

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Entities.Enemy.EnemyObject;
-using UnityEngine;
 
 namespace Entities.Enemy
 {
