@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Entities.Character.Abilities
 {
-    public class CharacterMovement
+    public class CharacterMovement 
     {
         private readonly Transform _characterTransform;
         private readonly float _moveSpeed;
@@ -13,6 +13,7 @@ namespace Entities.Character.Abilities
             _moveSpeed = moveSpeed;
             _characterTransform = characterTransform;
         }
+
         public void MoveCharacter()
         {
             _characterTransform.position += CharacterMovementDirection();
