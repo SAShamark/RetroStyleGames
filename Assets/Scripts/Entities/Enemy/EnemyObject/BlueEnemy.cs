@@ -1,23 +1,24 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Entities.Enemy.EnemyObject
 {
     public class BlueEnemy : BaseEnemy
     {
-        [SerializeField] private ProjectileEnemy _projectile;
+        [SerializeField] private EnemyProjectile _enemyProjectile;
         [SerializeField] private Transform _projectileStartPosition;
         [SerializeField] private int _countProjectile;
         [SerializeField] private float _cooldown = 3;
 
-        private ObjectPool<ProjectileEnemy> _objectPool;
+        private ObjectPool<EnemyProjectile> _objectPool;
         private bool _shoot;
         private bool _isReloaded;
         private IEnumerator _reloadCoroutine;
 
         protected void Start()
         {
-            _objectPool = new ObjectPool<ProjectileEnemy>(_projectile, _countProjectile, transform);
+            _objectPool = new ObjectPool<EnemyProjectile>(_enemyProjectile, _countProjectile, transform);
             _reloadCoroutine = Reload();
             StartCoroutine(_reloadCoroutine);
         }

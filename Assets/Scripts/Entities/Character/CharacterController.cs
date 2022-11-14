@@ -10,6 +10,7 @@ namespace Entities.Character
         public CharacterStatsControl CharacterStatsControl { get; private set; }
         public UltimateSkill UltimateSkill { get; private set; }
         public ShootingCharacter ShootingCharacter { get; private set; }
+        public static CharacterController Instance;
 
         [SerializeField] [Range(2f, 10f)] private float _moveSpeed = 8;
         [SerializeField] private CharacterCameraData _characterCameraData;
@@ -18,17 +19,27 @@ namespace Entities.Character
 
         private CharacterMovement _characterMovement;
         private CharacterCameraMovement _characterCameraMovement;
-        private ApplicationStart _applicationStart;
-
+        private ServiceContainer _serviceContainer;
+        private void Awake()
+        {
+            if (Instance == null)
+            {
+                Instance = this;
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+        }
         private void Start()
         {
-            _applicationStart = ApplicationStart.Instance;
+            _serviceContainer = ServiceContainer.Instance;
 
             CharacterStatsControl = new CharacterStatsControl(_characterData);
             _characterMovement = new CharacterMovement(_moveSpeed, transform);
             _characterCameraMovement = new CharacterCameraMovement(_characterCameraData, transform);
-            UltimateSkill = new UltimateSkill(_applicationStart,CharacterStatsControl);
-            ShootingCharacter = new ShootingCharacter(_applicationStart, _characterShootData, CharacterStatsControl);
+            UltimateSkill = new UltimateSkill(_serviceContainer,CharacterStatsControl);
+            ShootingCharacter = new ShootingCharacter(_serviceContainer, _characterShootData, CharacterStatsControl);
 
             CharacterStatsControl.OnMaxPower += UltimateSkill.UltimatePerformance;
         }

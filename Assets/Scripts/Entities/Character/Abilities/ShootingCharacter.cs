@@ -6,18 +6,18 @@ namespace Entities.Character.Abilities
 {
     public class ShootingCharacter
     {
-        private readonly ObjectPool<ProjectileCharacter> _objectPool;
+        private readonly ObjectPool<CharacterProjectile> _objectPool;
         private readonly CharacterShootData _characterShootData;
         private readonly CharacterStatsControl _characterStatsControl;
-        private readonly ApplicationStart _applicationStart;
+        private readonly ServiceContainer _serviceContainer;
 
-        public ShootingCharacter(ApplicationStart applicationStart, CharacterShootData characterShootData,
+        public ShootingCharacter(ServiceContainer serviceContainer, CharacterShootData characterShootData,
             CharacterStatsControl characterStatsControl)
         {
-            _applicationStart = applicationStart;
+            _serviceContainer = serviceContainer;
             _characterShootData = characterShootData;
             _characterStatsControl = characterStatsControl;
-            _objectPool = new ObjectPool<ProjectileCharacter>(_characterShootData.ProjectilePrefab,
+            _objectPool = new ObjectPool<CharacterProjectile>(_characterShootData.CharacterProjectilePrefab,
                 _characterShootData.CountProjectile);
         }
 
@@ -27,35 +27,36 @@ namespace Entities.Character.Abilities
             SetProjectileData(projectile);
         }
 
-        private void SetProjectileData(ProjectileCharacter projectileCharacter)
+        private void SetProjectileData(CharacterProjectile characterProjectile)
         {
-            projectileCharacter.OnKilledEnemy += UpdateStats;
-            projectileCharacter.OnDisableProjectile += Unsubscribe;
-            projectileCharacter.OnClosestEnemy += FindClosestEnemy;
+            characterProjectile.OnKilledEnemy += UpdateStats;
+            characterProjectile.OnDisableProjectile += Unsubscribe;
+            characterProjectile.OnClosestEnemy += FindClosestEnemy;
 
-            projectileCharacter.IsRebound = _characterStatsControl.IsReboundProjectile();
+            characterProjectile.IsRebound = _characterStatsControl.IsReboundProjectile();
 
-            projectileCharacter.transform.rotation = Quaternion.Euler(_characterShootData.Camera.eulerAngles.x,
+            Transform transform;
+            (transform = characterProjectile.transform).rotation = Quaternion.Euler(_characterShootData.Camera.eulerAngles.x,
                 _characterShootData.Character.eulerAngles.y, 0);
 
-            projectileCharacter.transform.position = _characterShootData.ProjectileStartPosition.position;
+            transform.position = _characterShootData.ProjectileStartPosition.position;
         }
 
-        private void Unsubscribe(ProjectileCharacter projectileCharacter)
+        private void Unsubscribe(CharacterProjectile characterProjectile)
         {
-            projectileCharacter.OnKilledEnemy -= UpdateStats;
-            projectileCharacter.OnDisableProjectile -= Unsubscribe;
-            projectileCharacter.OnClosestEnemy -= FindClosestEnemy;
+            characterProjectile.OnKilledEnemy -= UpdateStats;
+            characterProjectile.OnDisableProjectile -= Unsubscribe;
+            characterProjectile.OnClosestEnemy -= FindClosestEnemy;
         }
 
-        private void FindClosestEnemy(ProjectileCharacter projectileCharacter)
+        private void FindClosestEnemy(CharacterProjectile characterProjectile)
         {
             float minDistance = Mathf.Infinity;
             BaseEnemy closestEnemy = null;
-            foreach (var enemy in _applicationStart.EnemyRegistry.EnemiesContainer)
+            foreach (var enemy in _serviceContainer.EnemyRegistry.EnemiesContainer)
             {
                 float distance = Vector3.Distance(enemy.transform.position,
-                    projectileCharacter.gameObject.transform.position);
+                    characterProjectile.gameObject.transform.position);
                 if (distance < minDistance)
                 {
                     closestEnemy = enemy;
@@ -63,7 +64,7 @@ namespace Entities.Character.Abilities
                 }
             }
 
-            projectileCharacter.ClosestEnemy = closestEnemy;
+            characterProjectile.ClosestEnemy = closestEnemy;
         }
 
         private void UpdateStats()

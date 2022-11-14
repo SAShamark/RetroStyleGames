@@ -63,7 +63,9 @@ namespace Entities.Enemy.EnemyObject
                 yield return new WaitForEndOfFrame();
             }
 
-            transform.position = new Vector3(transform.position.x, 0, transform.position.z);
+            var transformPosition = transform.position;
+            transformPosition = new Vector3(transformPosition.x, 0, transformPosition.z);
+            transform.position = transformPosition;
             _navMeshAgent.enabled = true;
             _isMove = true;
         }
@@ -82,9 +84,11 @@ namespace Entities.Enemy.EnemyObject
 
         private void ComeDown()
         {
-            transform.position =
-                Vector3.Lerp(transform.position, new Vector3(transform.position.x, 0, transform.position.z),
+            var transformPosition = transform.position;
+            transformPosition =
+                Vector3.Lerp(transformPosition, new Vector3(transformPosition.x, 0, transformPosition.z),
                     MoveSpeed * Time.deltaTime);
+            transform.position = transformPosition;
         }
 
         protected override void MoveToTarget()

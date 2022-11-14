@@ -6,12 +6,12 @@ namespace Entities.Character.Abilities
     public class UltimateSkill
     {
         public event Action<bool> OnUltimateSkillButton;
-        private readonly ApplicationStart _applicationStart;
+        private readonly ServiceContainer _serviceContainer;
         private readonly CharacterStatsControl _characterStatsControl;
 
-        public UltimateSkill(ApplicationStart applicationStart,CharacterStatsControl characterStatsControl)
+        public UltimateSkill(ServiceContainer serviceContainer,CharacterStatsControl characterStatsControl)
         {
-            _applicationStart = applicationStart;
+            _serviceContainer = serviceContainer;
             _characterStatsControl = characterStatsControl;
         }
         public void UltimatePerformance(bool isActive)
@@ -27,7 +27,7 @@ namespace Entities.Character.Abilities
 
         private void KillAll()
         {
-            var enemiesContainer = _applicationStart.EnemyRegistry.EnemiesContainer;
+            var enemiesContainer = _serviceContainer.EnemyRegistry.EnemiesContainer;
             
             if (enemiesContainer != null)
             {

@@ -44,7 +44,7 @@ namespace Entities.Enemy
             {
                 yield return delay;
                 SpawnerTime();
-                CreatEnemy();
+                CreateEnemy();
             }
         }
 
@@ -61,7 +61,7 @@ namespace Entities.Enemy
         }
 
 
-        private void CreatEnemy()
+        private void CreateEnemy()
         {
             _enemyType = GetEnemyType();
             for (int i = 0; i < _countForSpawnEnemy; i++)
