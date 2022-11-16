@@ -6,17 +6,16 @@ using UnityEngine.AI;
 namespace Entities.Enemy.EnemyObject
 {
     [RequireComponent(typeof(NavMeshAgent))]
-    public abstract class BaseEnemy : MonoBehaviour, IHealth
+    public abstract class BaseEnemy : MonoBehaviour, IHeal,IDamageTaker
     {
         protected Transform Target { get; private set; }
         public EnemyType EnemyType { get; private set; }
         public float EnergyPoint { get; private set; }
-        public float MoveSpeed { get; private set; }
-        public float MinHealth => 0;
-        public float MaxHealth { get; private set; }
         public float Health { get; private set; }
-        public float Attack { get; private set; }
-        public event Action<BaseEnemy> OnDeath;
+        protected float MoveSpeed { get; private set; }
+        private const float MinHealth = 0;
+        private float _maxHealth;
+        protected float Attack { get; private set; }
 
         protected NavMeshAgent NavMeshAgent;
 
@@ -27,7 +26,7 @@ namespace Entities.Enemy.EnemyObject
             EnemyType = enemyStaticData.Type;
             MoveSpeed = enemyStaticData.MoveSpeed;
             Health = enemyStaticData.Health;
-            MaxHealth = Health;
+            _maxHealth = Health;
             Attack = enemyStaticData.Attack;
             EnergyPoint = enemyStaticData.EnergyPoint;
             NavMeshAgent = GetComponent<NavMeshAgent>();
@@ -35,19 +34,18 @@ namespace Entities.Enemy.EnemyObject
         }
 
         public abstract void ChangeTarget(Vector3 newTarget);
-
-        public void IncreaseHealth(float healthValue)
+        
+        public void Heal(float healthValue)
         {
             Health += healthValue;
-            if (Health >= MaxHealth)
+            if (Health >= _maxHealth)
             {
-                Health = MaxHealth;
+                Health = _maxHealth;
             }
         }
-
-        public void DecreaseHealth(float value)
+        public void TakeDamage(float damageValue)
         {
-            Health -= value;
+            Health -= damageValue;
             if (Health <= MinHealth)
             {
                 Health = MinHealth;
@@ -55,10 +53,9 @@ namespace Entities.Enemy.EnemyObject
             }
         }
 
-        private void Death()
+        public void Death()
         {
-            OnDeath?.Invoke(this);
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         }
 
         protected virtual void MoveToTarget()

@@ -1,17 +1,18 @@
 using System;
 using System.Linq;
+using Entities.Enemy;
 
-namespace Entities.Character.Abilities
+namespace Entities.Character.Controllers
 {
     public class UltimateSkill
     {
         public event Action<bool> OnUltimateSkillButton;
-        private readonly ServiceContainer _serviceContainer;
+        private readonly EnemySpawner _enemySpawner;
         private readonly CharacterStatsControl _characterStatsControl;
 
-        public UltimateSkill(ServiceContainer serviceContainer,CharacterStatsControl characterStatsControl)
+        public UltimateSkill(EnemySpawner enemySpawner,CharacterStatsControl characterStatsControl)
         {
-            _serviceContainer = serviceContainer;
+            _enemySpawner = enemySpawner;
             _characterStatsControl = characterStatsControl;
         }
         public void UltimatePerformance(bool isActive)
@@ -27,15 +28,12 @@ namespace Entities.Character.Abilities
 
         private void KillAll()
         {
-            var enemiesContainer = _serviceContainer.EnemyRegistry.EnemiesContainer;
-            
-            if (enemiesContainer != null)
+            var enemiesPools = _enemySpawner.EnemiesPools;
+            if (enemiesPools != null)
             {
-                int enemyCount = enemiesContainer.Count;
-                for (int i = enemyCount; i > 0; i--)
+                foreach (var enemy in enemiesPools.SelectMany(enemiesPool => enemiesPool.Value.Pool))
                 {
-                    var enemy = enemiesContainer.Last();
-                    enemy.DecreaseHealth(enemy.Health);
+                    enemy.Death();
                     _characterStatsControl.IncreaseKillCount();
                 }
             }

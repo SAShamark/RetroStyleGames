@@ -1,3 +1,4 @@
+using Services;
 using UI.Panels.Death;
 using UI.Panels.GamePlay;
 using UI.Panels.Pause;
@@ -20,17 +21,18 @@ namespace UI
 
         private IViewController _currentController;
 
-        private readonly CharacterController _characterController;
+        private CharacterController _characterController;
 
 
-        public GamePanelsController(GamePanelView gamePanelView, CharacterController characterController)
+        public GamePanelsController(GamePanelView gamePanelView)
         {
             _gamePanelView = gamePanelView;
-            _characterController = characterController;
         }
 
         public void Init()
         {
+            _characterController = ServiceLocator.SharedInstance.Resolve<CharacterController>();
+            
             _gamePlayModel = new GamePlayModel(_characterController.CharacterStatsControl.Health,
                 _characterController.CharacterStatsControl.Power, _characterController.CharacterStatsControl.KillCount);
             _deathModel = new DeathModel(_characterController.CharacterStatsControl.KillCount);
@@ -42,7 +44,7 @@ namespace UI
 
 
             _gamePlayController.OnPauseGame += OnTabChanger;
-            _gamePlayController.OnShoot += _characterController.ShootingCharacter.GetProjectile;
+            _gamePlayController.OnShoot += _characterController.ShootingCharacter.Shoot;
             _gamePlayController.OnUltimateSkill += _characterController.UltimateSkill.UseSkill;
 
             _pauseController.OnContinueGame += OnTabChanger;
@@ -64,7 +66,7 @@ namespace UI
         public void OnDestroy()
         {
             _gamePlayController.OnPauseGame -= OnTabChanger;
-            _gamePlayController.OnShoot -= _characterController.ShootingCharacter.GetProjectile;
+            _gamePlayController.OnShoot -= _characterController.ShootingCharacter.Shoot;
             _gamePlayController.OnUltimateSkill -= _characterController.UltimateSkill.UseSkill;
 
             _pauseController.OnContinueGame -= OnTabChanger;

@@ -1,29 +1,31 @@
 using Entities.Character.Data;
+using Entities.Enemy;
 using Entities.Enemy.EnemyObject;
+using Services;
 using UnityEngine;
 
-namespace Entities.Character.Abilities
+namespace Entities.Character.Controllers
 {
-    public class ShootingCharacter
+    public class ShootingCharacter: IShooter
     {
-        private readonly ObjectPool<CharacterProjectile> _objectPool;
+        private readonly ObjectPool<CharacterProjectile> _projectilePool;
         private readonly CharacterShootData _characterShootData;
         private readonly CharacterStatsControl _characterStatsControl;
-        private readonly ServiceContainer _serviceContainer;
+        private readonly EnemySpawner _enemySpawner;
 
-        public ShootingCharacter(ServiceContainer serviceContainer, CharacterShootData characterShootData,
+        public ShootingCharacter(EnemySpawner enemySpawner, CharacterShootData characterShootData,
             CharacterStatsControl characterStatsControl)
         {
-            _serviceContainer = serviceContainer;
+            _enemySpawner = enemySpawner;
             _characterShootData = characterShootData;
             _characterStatsControl = characterStatsControl;
-            _objectPool = new ObjectPool<CharacterProjectile>(_characterShootData.CharacterProjectilePrefab,
-                _characterShootData.CountProjectile);
+            _projectilePool = new ObjectPool<CharacterProjectile>(_characterShootData.CharacterProjectilePrefab,
+                _characterShootData.CountProjectile, _characterShootData.ProjectileContainer);
         }
 
-        public void GetProjectile()
+        public void Shoot()
         {
-            var projectile = _objectPool.GetFreeElement();
+            var projectile = _projectilePool.GetFreeElement();
             SetProjectileData(projectile);
         }
 
@@ -36,7 +38,8 @@ namespace Entities.Character.Abilities
             characterProjectile.IsRebound = _characterStatsControl.IsReboundProjectile();
 
             Transform transform;
-            (transform = characterProjectile.transform).rotation = Quaternion.Euler(_characterShootData.Camera.eulerAngles.x,
+            (transform = characterProjectile.transform).rotation = Quaternion.Euler(
+                _characterShootData.Camera.eulerAngles.x,
                 _characterShootData.Character.eulerAngles.y, 0);
 
             transform.position = _characterShootData.ProjectileStartPosition.position;
@@ -53,14 +56,24 @@ namespace Entities.Character.Abilities
         {
             float minDistance = Mathf.Infinity;
             BaseEnemy closestEnemy = null;
-            foreach (var enemy in _serviceContainer.EnemyRegistry.EnemiesContainer)
+            var enemiesPools = _enemySpawner.EnemiesPools;
+            if (enemiesPools != null)
             {
-                float distance = Vector3.Distance(enemy.transform.position,
-                    characterProjectile.gameObject.transform.position);
-                if (distance < minDistance)
+                foreach (var enemiesPool in enemiesPools)
                 {
-                    closestEnemy = enemy;
-                    minDistance = distance;
+                    foreach (var enemy in enemiesPool.Value.Pool)
+                    {
+                        if (enemy.gameObject.activeSelf)
+                        {
+                            float distance = Vector3.Distance(enemy.transform.position,
+                                characterProjectile.gameObject.transform.position);
+                            if (distance < minDistance)
+                            {
+                                closestEnemy = enemy;
+                                minDistance = distance;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -69,7 +82,7 @@ namespace Entities.Character.Abilities
 
         private void UpdateStats()
         {
-            foreach (var projectileCharacter in _objectPool.Pool)
+            foreach (var projectileCharacter in _projectilePool.Pool)
             {
                 bool addPower = projectileCharacter.KillCount == 1;
                 bool addPowerAndHealth = projectileCharacter.KillCount == 2;
@@ -83,7 +96,7 @@ namespace Entities.Character.Abilities
                 {
                     _characterStatsControl.IncreaseKillCount();
                     _characterStatsControl.IncreasePower(projectileCharacter.EnergyValue);
-                    _characterStatsControl.IncreaseHealth(_characterStatsControl.Health / 2);
+                    _characterStatsControl.Heal(_characterStatsControl.Health / 2);
                     projectileCharacter.ResetEnergyValue();
                 }
             }

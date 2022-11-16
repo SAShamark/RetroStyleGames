@@ -5,23 +5,21 @@ using CharacterController = Entities.Character.CharacterController;
 
 namespace Entities.Enemy.EnemyObject
 {
-    
     public class RedEnemy : BaseEnemy
     {
+        [SerializeField] private NavMeshAgent _navMeshAgent;
         [SerializeField] private float _timeToFly = 2;
 
         private const float YUpPosition = 1;
         private const float FallibilityY = 0.1f;
         private const int CharacterLayer = 8;
         private bool _isMove;
-        private IEnumerator _beforeMoveCoroutine;
-        private NavMeshAgent _navMeshAgent;
 
-        private void Start()
+        private void OnEnable()
         {
-            _navMeshAgent = GetComponent<NavMeshAgent>();
-            _beforeMoveCoroutine = BeforeMove();
-            StartCoroutine(_beforeMoveCoroutine);
+            _navMeshAgent.enabled = false;
+            _isMove = false;
+            StartCoroutine(BeforeMove());
         }
 
         private void OnTriggerEnter(Collider other)
@@ -29,8 +27,8 @@ namespace Entities.Enemy.EnemyObject
             if (other.gameObject.layer == CharacterLayer)
             {
                 var characterView = other.gameObject.GetComponent<CharacterController>();
-                characterView.CharacterStatsControl.DecreaseHealth(Attack);
-                DecreaseHealth(Health);
+                characterView.CharacterStatsControl.TakeDamage(Attack);
+                TakeDamage(Health);
             }
         }
 
@@ -39,12 +37,9 @@ namespace Entities.Enemy.EnemyObject
             MoveToTarget();
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
-            if (_beforeMoveCoroutine != null)
-            {
-                StopCoroutine(_beforeMoveCoroutine);
-            }
+            StopCoroutine(BeforeMove());
         }
 
         private IEnumerator BeforeMove()

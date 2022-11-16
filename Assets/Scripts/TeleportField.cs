@@ -1,14 +1,17 @@
+using System.Linq;
 using Entities;
+using Entities.Enemy;
+using Services;
 using UnityEngine;
 
 public class TeleportField : MonoBehaviour
 {
     private const int CharacterLayer = 8;
-    private ServiceContainer _serviceContainer;
+    private EnemySpawner _enemySpawner;
 
     private void Start()
     {
-        _serviceContainer = ServiceContainer.Instance;
+        _enemySpawner = ServiceLocator.SharedInstance.Resolve<EnemySpawner>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -22,9 +25,10 @@ public class TeleportField : MonoBehaviour
 
     private void InformingEnemyAboutCharacterPosition(Collider other)
     {
-        if (_serviceContainer.EnemyRegistry.EnemiesContainer != null)
+        var enemiesPools = _enemySpawner.EnemiesPools;
+        if (enemiesPools != null)
         {
-            foreach (var enemy in _serviceContainer.EnemyRegistry.EnemiesContainer)
+            foreach (var enemy in enemiesPools.SelectMany(enemiesPool => enemiesPool.Value.Pool))
             {
                 enemy.ChangeTarget(other.transform.position);
             }

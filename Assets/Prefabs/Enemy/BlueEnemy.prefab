@@ -152,10 +152,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12c50f26b8c026247a706ee3ac9ca8e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _projectile: {fileID: 1441390620710470968, guid: 36f16f46252fe2045a4e2884ab5741ab,
+  _enemyProjectile: {fileID: 1441390620710470968, guid: 36f16f46252fe2045a4e2884ab5741ab,
     type: 3}
   _projectileStartPosition: {fileID: 1046438631939093322}
   _countProjectile: 3
+  _cooldown: 3
 --- !u!1 &6445991420885009292
 GameObject:
   m_ObjectHideFlags: 0

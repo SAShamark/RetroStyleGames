@@ -2,7 +2,7 @@
 
 namespace Entities.Enemy.EnemyObject.Data
 {
-    [CreateAssetMenu(fileName = "EnemyStaticData", menuName = "Unit/EnemyStaticData", order = 1)]
+    [CreateAssetMenu(fileName = "EnemyStaticData", menuName = "Unit/Enemy/EnemyType/EnemyStaticData", order = 1)]
     public class EnemyStaticData : ScriptableObject
     {
         [SerializeField] private EnemyType _type;

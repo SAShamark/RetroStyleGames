@@ -1,7 +1,7 @@
 ﻿using UI_InputSystem.Base;
 using UnityEngine;
 
-namespace Entities.Character.Abilities
+namespace Entities.Character.Controllers
 {
     public class CharacterMovement 
     {

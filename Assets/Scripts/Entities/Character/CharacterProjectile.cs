@@ -35,9 +35,9 @@ namespace Entities.Character
         }
         private void HitEnemy(BaseEnemy enemy)
         {
-            enemy.DecreaseHealth(enemy.Health);
+            enemy.TakeDamage(enemy.Health);
 
-            if (enemy.Health <= enemy.MinHealth)
+            if (enemy.Health <= 0)
             {
                 IncreaseKillCount();
                 EnergyValue += GetEnergyPoint(enemy);
@@ -84,6 +84,7 @@ namespace Entities.Character
 
         protected override void TurnOffProjectile()
         {
+            ClosestEnemy = null;
             ResetEnergyValue();
             OnDisableProjectile?.Invoke(this);
             base.TurnOffProjectile();
@@ -95,6 +96,7 @@ namespace Entities.Character
             ResetKillCount();
             ResetEnergyValue();
             OnDisableProjectile?.Invoke(this);
+            ClosestEnemy = null;
             gameObject.SetActive(false);
         }
 

@@ -2,9 +2,9 @@ using System;
 using Entities.Character.Data;
 using UI;
 
-namespace Entities.Character.Abilities
+namespace Entities.Character.Controllers
 {
-    public class CharacterStatsControl : IHealth
+    public class CharacterStatsControl : IHeal, IDamageTaker
     {
         public event Action OnChangeHealth;
         public event Action OnChangePower;
@@ -12,18 +12,18 @@ namespace Entities.Character.Abilities
         public event Action<bool> OnMaxPower;
         public event Action<GameTab> OnChangeTab;
         public int KillCount { get; private set; }
-        public float MinHealth => 0;
-        public float MaxHealth { get; }
         public float Health { get; private set; }
         public float Power { get; private set; }
 
+        private readonly float _maxHealth;
         private const float MaxPower = 100;
         private const float MinPower = 0;
+        private const float MinHealth = 0;
 
         public CharacterStatsControl(CharacterData characterData)
         {
             Health = characterData.Health;
-            MaxHealth = Health;
+            _maxHealth = Health;
             Power = characterData.Power;
         }
 
@@ -63,21 +63,21 @@ namespace Entities.Character.Abilities
             OnMaxPower?.Invoke(false);
             OnChangePower?.Invoke();
         }
-
-        public void IncreaseHealth(float healthValue)
+        public void Heal(float healthValue)
         {
             Health += healthValue;
-            if (Health >= MaxHealth)
+            if (Health >= _maxHealth)
             {
-                Health = MaxHealth;
+                Health = _maxHealth;
             }
 
             OnChangeHealth?.Invoke();
         }
 
-        public void DecreaseHealth(float healthValue)
+
+        public void TakeDamage(float damageValue)
         {
-            Health -= healthValue;
+            Health -= damageValue;
             if (Health < MinHealth)
             {
                 Health = MinHealth;
@@ -87,7 +87,7 @@ namespace Entities.Character.Abilities
             OnChangeHealth?.Invoke();
         }
 
-        private void Death()
+        public void Death()
         {
             OnChangeTab?.Invoke(GameTab.Death);
             OnChangeKillCount?.Invoke();
@@ -95,7 +95,7 @@ namespace Entities.Character.Abilities
 
         public bool IsReboundProjectile()
         {
-            return MaxHealth - Health > 10;
+            return _maxHealth - Health > 10;
         }
     }
 }
