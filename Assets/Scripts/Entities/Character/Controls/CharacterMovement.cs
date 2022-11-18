@@ -1,7 +1,7 @@
 ﻿using UI_InputSystem.Base;
 using UnityEngine;
 
-namespace Entities.Character.Controllers
+namespace Entities.Character.Controls
 {
     public class CharacterMovement 
     {
@@ -21,12 +21,12 @@ namespace Entities.Character.Controllers
 
         private Vector3 CharacterMovementDirection()
         {
-            var baseDirection =
+            var direction =
                 _characterTransform.right * UIInputSystem.ME.GetAxisHorizontal(JoyStickAction.Movement) +
                 _characterTransform.forward * UIInputSystem.ME.GetAxisVertical(JoyStickAction.Movement);
 
-            baseDirection *= _moveSpeed * Time.deltaTime;
-            return baseDirection;
+            direction *= _moveSpeed * Time.deltaTime;
+            return direction;
         }
     }
 }

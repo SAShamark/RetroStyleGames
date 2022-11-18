@@ -4,16 +4,16 @@ using Entities.Enemy.EnemyObject;
 using Services;
 using UnityEngine;
 
-namespace Entities.Character.Controllers
+namespace Entities.Character.Controls
 {
-    public class ShootingCharacter: IShooter
+    public class CharacterShooting: IShooter
     {
         private readonly ObjectPool<CharacterProjectile> _projectilePool;
         private readonly CharacterShootData _characterShootData;
         private readonly CharacterStatsControl _characterStatsControl;
         private readonly EnemySpawner _enemySpawner;
 
-        public ShootingCharacter(EnemySpawner enemySpawner, CharacterShootData characterShootData,
+        public CharacterShooting(EnemySpawner enemySpawner, CharacterShootData characterShootData,
             CharacterStatsControl characterStatsControl)
         {
             _enemySpawner = enemySpawner;

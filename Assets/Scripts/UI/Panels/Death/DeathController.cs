@@ -1,3 +1,4 @@
+using UI.View;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -6,12 +7,12 @@ namespace UI.Panels.Death
     public class DeathController: IViewController
     {
         private readonly DeathView _deathView;
-        private readonly DeathModel _deathModel;
+        private int _killCount;
 
-        public DeathController(DeathView deathView,DeathModel deathModel)
+        public DeathController(DeathView deathView,int killCount)
         {
             _deathView = deathView;
-            _deathModel = deathModel;
+            _killCount = killCount;
         }
 
         public void Initialize(params object[] args)
@@ -27,7 +28,10 @@ namespace UI.Panels.Death
             _deathView.RestartButton.onClick.RemoveListener(RestartButtonClicked);
             _deathView.Hide();
         }
-
+        public void GetKillCount(int killCount)
+        {
+            _killCount = killCount;
+        }
         private void RestartButtonClicked()
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
@@ -36,7 +40,7 @@ namespace UI.Panels.Death
 
         public void ChangeKillCount()
         {
-            _deathView.KillCountText.text = $"{_deathModel.KillCount.ToString()} :KillCount";
+            _deathView.KillCountText.text = $"{_killCount.ToString()} :KillCount";
         }
         private void StoppingTime()
         {

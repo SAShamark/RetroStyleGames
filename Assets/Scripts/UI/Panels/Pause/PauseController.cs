@@ -1,4 +1,5 @@
 using System;
+using UI.View;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,12 +10,10 @@ namespace UI.Panels.Pause
         public event Action<GameTab> OnContinueGame;
 
         private readonly PauseView _pauseView;
-        private readonly PauseModel _pauseModel;
 
-        public PauseController(PauseView pauseView, PauseModel pauseModel)
+        public PauseController(PauseView pauseView)
         {
             _pauseView = pauseView;
-            _pauseModel = pauseModel;
         }
 
         public void Initialize(params object[] args)

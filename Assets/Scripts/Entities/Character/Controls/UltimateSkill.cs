@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using Entities.Enemy;
 
-namespace Entities.Character.Controllers
+namespace Entities.Character.Controls
 {
     public class UltimateSkill
     {

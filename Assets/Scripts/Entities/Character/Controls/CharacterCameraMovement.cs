@@ -2,7 +2,7 @@
 using UI_InputSystem.Base;
 using UnityEngine;
 
-namespace Entities.Character.Controllers
+namespace Entities.Character.Controls
 {
     public class CharacterCameraMovement
     {
@@ -11,10 +11,10 @@ namespace Entities.Character.Controllers
 
         private float _verticalRotation;
 
-        private float XValueWithSens => UIInputSystem.ME.GetAxisHorizontal(JoyStickAction.CameraLook) * Time.deltaTime *
+        private float XValueForRotate => UIInputSystem.ME.GetAxisHorizontal(JoyStickAction.CameraLook) * Time.deltaTime *
                                         _characterCameraData.MouseSensX;
 
-        private float YValueWithSens =>
+        private float YValueForRotate =>
             UIInputSystem.ME.GetAxisVertical(JoyStickAction.CameraLook) * Time.deltaTime *
             _characterCameraData.MouseSensY;
 
@@ -36,7 +36,7 @@ namespace Entities.Character.Controllers
         {
             if (!_characterCameraData.CameraTransform) return;
 
-            _verticalRotation -= YValueWithSens;
+            _verticalRotation -= YValueForRotate;
             _verticalRotation = RotationClamped(_verticalRotation);
 
             _characterCameraData.CameraTransform.localRotation = Quaternion.Euler(_verticalRotation, 0f, 0f);
@@ -44,7 +44,7 @@ namespace Entities.Character.Controllers
 
         private void CameraHorizontalMovement()
         {
-            _characterTransform.Rotate(Vector3.up * XValueWithSens);
+            _characterTransform.Rotate(Vector3.up * XValueForRotate);
         }
     }
 }

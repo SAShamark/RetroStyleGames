@@ -1,4 +1,4 @@
-using Entities.Character.Controllers;
+using Entities.Character.Controls;
 using Entities.Character.Data;
 using Entities.Enemy;
 using Services;
@@ -11,7 +11,7 @@ namespace Entities.Character
     {
         public CharacterStatsControl CharacterStatsControl { get; private set; }
         public UltimateSkill UltimateSkill { get; private set; }
-        public ShootingCharacter ShootingCharacter { get; private set; }
+        public CharacterShooting CharacterShooting { get; private set; }
 
         [SerializeField] [Range(2f, 10f)] private float _moveSpeed = 8;
         [SerializeField] private CharacterCameraData _characterCameraData;
@@ -35,7 +35,7 @@ namespace Entities.Character
             _characterMovement = new CharacterMovement(_moveSpeed, transform);
             _characterCameraMovement = new CharacterCameraMovement(_characterCameraData, transform);
             UltimateSkill = new UltimateSkill(_enemySpawner, CharacterStatsControl);
-            ShootingCharacter = new ShootingCharacter(_enemySpawner, _characterShootData, CharacterStatsControl);
+            CharacterShooting = new CharacterShooting(_enemySpawner, _characterShootData, CharacterStatsControl);
 
             CharacterStatsControl.OnMaxPower += UltimateSkill.UltimatePerformance;
         }

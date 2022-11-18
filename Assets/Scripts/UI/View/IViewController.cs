@@ -1,4 +1,4 @@
-namespace UI
+namespace UI.View
 {
     internal interface IViewController
     {

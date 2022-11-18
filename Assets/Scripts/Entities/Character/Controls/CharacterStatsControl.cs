@@ -2,7 +2,7 @@ using System;
 using Entities.Character.Data;
 using UI;
 
-namespace Entities.Character.Controllers
+namespace Entities.Character.Controls
 {
     public class CharacterStatsControl : IHeal, IDamageTaker
     {

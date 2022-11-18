@@ -1,4 +1,6 @@
 using System;
+using System.Globalization;
+using UI.View;
 using UnityEngine;
 
 namespace UI.Panels.GamePlay
@@ -39,12 +41,12 @@ namespace UI.Panels.GamePlay
 
         public void UpdateHealthPoint()
         {
-            _gamePlayView.HealthText.text = $"{Mathf.Round(_gamePlayModel.Health).ToString()} :Health";
+            _gamePlayView.HealthText.text = $"{Mathf.Round(_gamePlayModel.Health).ToString(CultureInfo.InvariantCulture)} :Health";
         }
 
         public void UpdatePowerPoint()
         {
-            _gamePlayView.PowerText.text = $"{Mathf.Round(_gamePlayModel.Power).ToString()} :Power";
+            _gamePlayView.PowerText.text = $"{Mathf.Round(_gamePlayModel.Power).ToString(CultureInfo.InvariantCulture)} :Power";
         }
         public void UpdateKillCount()
         {

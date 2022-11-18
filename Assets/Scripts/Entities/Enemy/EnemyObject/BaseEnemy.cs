@@ -1,21 +1,21 @@
-﻿using System;
-using Entities.Enemy.EnemyObject.Data;
+﻿using Entities.Enemy.EnemyObject.Data;
 using UnityEngine;
 using UnityEngine.AI;
 
 namespace Entities.Enemy.EnemyObject
 {
     [RequireComponent(typeof(NavMeshAgent))]
-    public abstract class BaseEnemy : MonoBehaviour, IHeal,IDamageTaker
+    public abstract class BaseEnemy : MonoBehaviour, IHeal, IDamageTaker
     {
-        protected Transform Target { get; private set; }
         public EnemyType EnemyType { get; private set; }
         public float EnergyPoint { get; private set; }
-        public float Health { get; private set; }
-        protected float MoveSpeed { get; private set; }
-        private const float MinHealth = 0;
-        private float _maxHealth;
-        protected float Attack { get; private set; }
+        
+        protected Transform Target;
+        protected float Attack;
+        protected float Health;
+        protected float MoveSpeed;
+        protected float MaxHealth;
+        protected const float MinHealth = 0;
 
         protected NavMeshAgent NavMeshAgent;
 
@@ -26,7 +26,7 @@ namespace Entities.Enemy.EnemyObject
             EnemyType = enemyStaticData.Type;
             MoveSpeed = enemyStaticData.MoveSpeed;
             Health = enemyStaticData.Health;
-            _maxHealth = Health;
+            MaxHealth = Health;
             Attack = enemyStaticData.Attack;
             EnergyPoint = enemyStaticData.EnergyPoint;
             NavMeshAgent = GetComponent<NavMeshAgent>();
@@ -34,15 +34,16 @@ namespace Entities.Enemy.EnemyObject
         }
 
         public abstract void ChangeTarget(Vector3 newTarget);
-        
+
         public void Heal(float healthValue)
         {
             Health += healthValue;
-            if (Health >= _maxHealth)
+            if (Health >= MaxHealth)
             {
-                Health = _maxHealth;
+                Health = MaxHealth;
             }
         }
+
         public void TakeDamage(float damageValue)
         {
             Health -= damageValue;
@@ -55,6 +56,7 @@ namespace Entities.Enemy.EnemyObject
 
         public void Death()
         {
+            Health = MinHealth;
             gameObject.SetActive(false);
         }
 

@@ -8,14 +8,14 @@ namespace Entities.Character
 {
     public class CharacterProjectile : Projectile
     {
+        public event Action OnKilledEnemy;
+        public event Action<CharacterProjectile> OnDisableProjectile;
+        public event Action<CharacterProjectile> OnClosestEnemy;
+
         public bool IsRebound
         {
             set => _isRebound = value;
         }
-
-        public event Action OnKilledEnemy;
-        public event Action<CharacterProjectile> OnDisableProjectile;
-        public event Action<CharacterProjectile> OnClosestEnemy;
 
         public float EnergyValue { get; private set; }
         public BaseEnemy ClosestEnemy { get; set; }
@@ -23,31 +23,25 @@ namespace Entities.Character
         private const int EnemyLayer = 9;
         private const float PossibleReboundPercent = 0.1f;
         private bool _isRebound;
-        
+
         protected override void OnTriggerEnter(Collider other)
         {
             base.OnTriggerEnter(other);
             if (other.gameObject.layer == EnemyLayer)
             {
                 var enemy = other.gameObject.GetComponentInParent<BaseEnemy>();
-                HitEnemy(enemy);
+                KillEnemy(enemy);
             }
         }
-        private void HitEnemy(BaseEnemy enemy)
-        {
-            enemy.TakeDamage(enemy.Health);
 
-            if (enemy.Health <= 0)
-            {
-                IncreaseKillCount();
-                EnergyValue += GetEnergyPoint(enemy);
-                OnKilledEnemy?.Invoke();
-                NextProjectileAction();
-            }
-            else
-            {
-                TurnOffProjectile();
-            }
+        private void KillEnemy(BaseEnemy enemy)
+        {
+            enemy.Death();
+
+            IncreaseKillCount();
+            EnergyValue += GetEnergyPoint(enemy);
+            OnKilledEnemy?.Invoke();
+            NextProjectileAction();
         }
 
         private void NextProjectileAction()
@@ -102,14 +96,12 @@ namespace Entities.Character
 
         protected override void MoveProjectile()
         {
-            if (ClosestEnemy == null)
-            {
-                MoveProjectileForward();
-            }
-            else
+            if (ClosestEnemy != null)
             {
                 MoveProjectileToClosestEnemy();
             }
+
+            MoveProjectileForward();
         }
 
         private void MoveProjectileForward()
@@ -121,7 +113,7 @@ namespace Entities.Character
         {
             var transformPosition = transform.position;
             transformPosition += (ClosestEnemy.transform.position - transformPosition).normalized *
-                        (_moveSpeed * Time.deltaTime);
+                                 (_moveSpeed * Time.deltaTime);
             transform.position = transformPosition;
         }
     }
